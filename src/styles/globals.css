@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a[href*="https://unicorn.studio?utm_source=public-url"] {
+    display: none !important;
+}
