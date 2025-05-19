@@ -5,6 +5,14 @@ const UnicornStudioEmbed = () => {
     if (!(window as any).UnicornStudio) {
       (window as any).UnicornStudio = { isInitialized: false };
 
+      const interval = setInterval(() => {
+        const canvas = document.querySelector('[data-us-project] canvas');
+        if (canvas) {
+          (canvas as HTMLElement).style.borderRadius = "30px";
+          clearInterval(interval);
+        }
+      }, 100);
+
       const script = document.createElement("script");
       script.src =
         "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.11/dist/unicornStudio.umd.js";
@@ -22,7 +30,7 @@ const UnicornStudioEmbed = () => {
   return (
     <div
       data-us-project="EtMztKQLYrjjPU6lz8VB"
-      style={{ width: "1440px", height: "900px" }}
+      style={{ width: "100vw", height: "900px", borderRadius: "30px" }}
     />
   );
 };

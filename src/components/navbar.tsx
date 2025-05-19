@@ -56,8 +56,7 @@ export const Navbar = () => {
             color="foreground"
             href="/"
           >
-            <Logo /> {/* Icône du logo */}
-            <p className="font-bold text-inherit">BRIEFOLIO</p> {/* Nom du projet */}
+            <Logo size={120} height={120} />
           </Link>
         </NavbarBrand>
 
@@ -73,7 +72,7 @@ export const Navbar = () => {
                 color="foreground"
                 href={item.href}
               >
-                {item.label} {/* Texte du lien */}
+                {item.label}
               </Link>
             </NavbarItem>
           ))}
