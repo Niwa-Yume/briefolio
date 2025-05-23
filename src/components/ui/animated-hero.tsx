@@ -60,10 +60,7 @@ function Hero() {
             </h1>
 
             <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center">
-              Managing a small business today is already tough. Avoid further
-              complications by ditching outdated, tedious trade methods. Our
-              goal is to streamline SMB trade, making it easier and faster than
-              ever.
+              Trouver des projets vraiment pertinents pour enrichir son portfolio, sans tomber dans le déjà-vu, c’est un vrai défi. Ne perdez plus de temps avec des idées banales ou peu valorisantes. Briefolio a été créé pour proposer des projets uniques, concrets et inspirants, afin de bâtir un portfolio qui sort réellement du lot.
             </p>
           </div>
           <div className="flex flex-row gap-3">
