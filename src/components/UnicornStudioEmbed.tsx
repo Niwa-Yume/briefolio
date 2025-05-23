@@ -30,7 +30,12 @@ const UnicornStudioEmbed = () => {
   return (
     <div
       data-us-project="EtMztKQLYrjjPU6lz8VB"
-      style={{ width: "100vw", height: "900px", borderRadius: "30px" }}
+      style={{
+        width: "100%",
+        maxWidth: "100%",
+        height: "900px",
+        borderRadius: "30px",
+      }}
     />
   );
 };
