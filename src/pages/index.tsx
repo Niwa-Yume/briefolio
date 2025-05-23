@@ -3,9 +3,6 @@ import UnicornStudioEmbed from "@/components/UnicornStudioEmbed.tsx";
 import { SplashCursor } from "@/components/ui/splash-cursor";
 import { Hero } from "@/components/ui/animated-hero";
 import AnimatedTextCycle from "@/components/ui/animated-text-cycle";
-import AnimatedGradientBackground from "@/components/ui/animated-gradient-background";
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-
 
 export default function IndexPage() {
   return (
@@ -43,9 +40,6 @@ export default function IndexPage() {
           </h1>
         </div>
       </div>
-
-      {/* fona animé */}
-
 
       {/* CTA */}
       <div className="block">
