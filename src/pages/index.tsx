@@ -9,7 +9,6 @@ export default function IndexPage() {
     <DefaultLayout>
 
       {/* effet de curseur */}
-
       <SplashCursor />
 
       {/* effet de blob 3D */}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -26,8 +27,10 @@ function Hero() {
       <div className="container mx-auto">
         <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
           <div>
-            <Button variant="secondary" size="sm" className="gap-4">
-              Lance toi aujourd'hui <MoveRight className="w-4 h-4" />
+            <Button variant="secondary" size="sm" className="gap-4" asChild>
+              <Link to="/register">
+                Lance toi aujourd'hui <MoveRight className="w-4 h-4" />
+              </Link>
             </Button>
           </div>
           <div className="flex gap-4 flex-col">
@@ -64,11 +67,15 @@ function Hero() {
             </p>
           </div>
           <div className="flex flex-row gap-3">
-            <Button size="lg" className="gap-4" variant="outline">
+            <Button size="lg" className="gap-4" variant="outline" asChild>
+              <Link to="/category">
               Regarder la liste de brief <PhoneCall className="w-4 h-4" />
+              </Link>
             </Button>
-            <Button size="lg" className="gap-4">
-              Inscris toi ici <MoveRight className="w-4 h-4" />
+            <Button size="lg" className="gap-4" asChild>
+              <Link to="/register">
+                Inscris toi ici <MoveRight className="w-4 h-4" />
+              </Link>
             </Button>
           </div>
         </div>

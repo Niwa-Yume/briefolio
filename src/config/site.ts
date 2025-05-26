@@ -14,7 +14,7 @@ export const siteConfig = {
     },
     {
       label: "Catégorie de Brief",
-      href: "/pricing",
+      href: "/category",
     },
     {
       label: "Contact",
