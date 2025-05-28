@@ -31,7 +31,6 @@ export const Navbar = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
-    // Récupérer la session actuelle
     const getUser = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -48,19 +47,29 @@ export const Navbar = () => {
 
     getUser();
 
-    // Écouter les changements d'authentification
+    // Écoute les changements d’authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
-
         if (session?.user && event === 'SIGNED_IN') {
           await createDefaultProfile(session.user.id);
         }
       }
     );
 
-    return () => subscription.unsubscribe();
+    // Écoute les changements de session dans le localStorage (multi-onglet ou reload)
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === 'supabase.auth.token') {
+        getUser();
+      }
+    };
+    window.addEventListener('storage', onStorage);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('storage', onStorage);
+    };
   }, []);
 
   const handleLogout = async () => {
