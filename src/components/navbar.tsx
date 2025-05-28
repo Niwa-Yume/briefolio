@@ -47,7 +47,7 @@ export const Navbar = () => {
 
     getUser();
 
-    // Écoute les changements d’authentification
+    // Correction ici :
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null);
@@ -59,8 +59,8 @@ export const Navbar = () => {
           await createDefaultProfile(session.user.id);
         }
       }
+    );
 
-    // Écoute les changements de session dans le localStorage (multi-onglet ou reload)
     const onStorage = (event: StorageEvent) => {
       if (event.key === 'supabase.auth.token') {
         getUser();
@@ -73,7 +73,6 @@ export const Navbar = () => {
       window.removeEventListener('storage', onStorage);
     };
   }, []);
-
   const handleLogout = async () => {
     try {
       setLoading(true);
