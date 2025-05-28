@@ -5,6 +5,8 @@ import Monthly from "@/pages/monthly.tsx";
 import CategoryPage from "@/pages/category";
 import BlogPage from "@/pages/blog";
 import AboutPage from "@/pages/about";
+import RegisterPage from "@/pages/register";
+import LoginPage from "@/pages/login";
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
       <Route element={<CategoryPage />} path="/category" />
       <Route element={<BlogPage />} path="/blog" />
       <Route element={<AboutPage />} path="/about" />
+      <Route element={<RegisterPage />} path="/register" />
+      <Route element={<LoginPage />} path="/login" />
     </Routes>
   );
 }

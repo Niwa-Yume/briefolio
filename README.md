@@ -12,6 +12,7 @@ This is a template for creating applications using Vite and HeroUI (v2).
 - [Tailwind Variants](https://tailwind-variants.org)
 - [TypeScript](https://www.typescriptlang.org)
 - [Framer Motion](https://www.framer.com/motion)
+- [Supabase](https://supabase.com) - For database and authentication
 
 ## How to Use
 
@@ -44,6 +45,45 @@ public-hoist-pattern[]=*@heroui/*
 ```
 
 After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+
+## Supabase Integration
+
+This project uses [Supabase](https://supabase.com) for database and authentication services. The Supabase client is configured in `src/lib/supabase.ts`.
+
+### Environment Variables
+
+To connect to your Supabase project, you need to set up the following environment variables in a `.env` file at the root of the project:
+
+```bash
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+You can find these values in your Supabase project dashboard under Project Settings > API.
+
+### Using Supabase in Components
+
+Import the Supabase client in your components to use it:
+
+```typescript
+import { supabase } from '../lib/supabase';
+
+// Example: Fetch data from a table
+const fetchData = async () => {
+  const { data, error } = await supabase
+    .from('your_table')
+    .select('*');
+
+  if (error) {
+    console.error('Error fetching data:', error);
+    return;
+  }
+
+  console.log('Data:', data);
+};
+```
+
+For more information on how to use Supabase, refer to the [Supabase documentation](https://supabase.com/docs).
 
 ## License
 

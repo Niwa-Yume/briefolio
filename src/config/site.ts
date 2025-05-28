@@ -20,6 +20,14 @@ export const siteConfig = {
       label: "Contact",
       href: "/contact",
     },
+    {
+      label: "S'inscrire",
+      href: "/register",
+    },
+    {
+      label: "Se connecter",
+      href: "/login",
+    },
   ],
   navMenuItems: [
     {
