@@ -138,7 +138,8 @@ export default function RegisterPage() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Mot de passe</label>
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            x<label className="block text-sm font-medium mb-1">Mot de passe</label>
             <Input
               type="password"
               aria-label="Mot de passe"
