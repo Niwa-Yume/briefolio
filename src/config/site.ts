@@ -20,47 +20,23 @@ export const siteConfig = {
       label: "Contact",
       href: "/contact",
     },
-    {
-      label: "S'inscrire",
-      href: "/register",
-    },
-    {
-      label: "Se connecter",
-      href: "/login",
-    },
   ],
   navMenuItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Accueil",
+      href: "/",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Projet du mois",
+      href: "/monthly",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "Catégorie de Brief",
+      href: "/category",
     },
     {
-      label: "Team",
-      href: "/team",
-    },
-    {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
+      label: "Contact",
+      href: "/contact",
     },
   ],
   links: {

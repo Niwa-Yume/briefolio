@@ -92,6 +92,7 @@ export default function RegisterPage() {
         {/* Email/Password Registration Form */}
         <form onSubmit={handleRegister} className="w-full space-y-4">
           <div className="mb-4">
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label className="block text-sm font-medium mb-1">Email</label>
             <Input
               type="email"
