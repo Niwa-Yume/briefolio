@@ -76,7 +76,17 @@ For production deployments, it's important to set environment variables securely
 
 1. **Never commit your `.env` file to version control**. Make sure it's included in your `.gitignore` file.
 2. **Set environment variables in your deployment platform**:
-   - For Vercel: Use the Environment Variables section in your project settings
+   - For Vercel: You have two options:
+     - Use the Environment Variables section in your project settings (recommended for security)
+     - Use the `vercel.json` file with an `env` section (already configured in this project):
+       ```json
+       {
+         "env": {
+           "VITE_SUPABASE_URL": "your_supabase_url",
+           "VITE_SUPABASE_ANON_KEY": "your_supabase_anon_key"
+         }
+       }
+       ```
    - For Netlify: Use the Environment Variables section in your site settings
    - For other platforms: Refer to their documentation on how to set environment variables
 
