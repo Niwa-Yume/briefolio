@@ -52,11 +52,13 @@ export const Navbar = () => {
       async (event, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
-        if (session?.user && event === 'SIGNED_IN') {
+        if (event === "SIGNED_OUT") {
+          navigate("/login");
+        }
+        if (session?.user && event === "SIGNED_IN") {
           await createDefaultProfile(session.user.id);
         }
       }
-    );
 
     // Écoute les changements de session dans le localStorage (multi-onglet ou reload)
     const onStorage = (event: StorageEvent) => {
@@ -76,10 +78,9 @@ export const Navbar = () => {
     try {
       setLoading(true);
       await supabase.auth.signOut();
-      setTimeout(() => {
-        navigate("/login");
-      }, 500);
+      // Ne pas rediriger ici, la redirection se fait dans onAuthStateChange
     } catch (e) {
+      // gestion d’erreur éventuelle
     } finally {
       setLoading(false);
     }
