@@ -14,7 +14,7 @@ import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-
+import { useNavigate } from "react-router-dom";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {
@@ -29,7 +29,7 @@ import { Button } from "@/components/ui/button";
 export const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     // Récupérer la session actuelle
     const getUser = async () => {
