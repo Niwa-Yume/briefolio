@@ -76,6 +76,7 @@ export default function RegisterPage() {
         {/* GitHub Authentication Button */}
         <Button 
           onClick={handleGithubLogin}
+
           className="w-full mb-4 gap-2 bg-gray-800 hover:bg-gray-900"
           disabled={loading}
         >
@@ -84,9 +85,9 @@ export default function RegisterPage() {
         </Button>
 
         <div className="flex items-center w-full my-4">
-          <div className="flex-grow h-px bg-gray-300"></div>
+          <div className="flex-grow h-px bg-gray-300" />
           <span className="px-3 text-sm text-gray-500">ou</span>
-          <div className="flex-grow h-px bg-gray-300"></div>
+          <div className="flex-grow h-px bg-gray-300" />
         </div>
 
         {/* Email/Password Registration Form */}
