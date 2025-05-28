@@ -8,7 +8,7 @@ export default function CompleteProfilePage() {
       const cleanUrl = window.location.pathname + window.location.search;
       window.history.replaceState(null, "", cleanUrl);
       // Optionnel : tu peux recharger la page si besoin
-      // window.location.reload();
+      window.location.reload();
     }
   }, []);
 
