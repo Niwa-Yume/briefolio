@@ -61,6 +61,20 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 You can find these values in your Supabase project dashboard under Project Settings > API.
 
+### Secure Environment Variables for Deployment
+
+For production deployments, it's important to set environment variables securely:
+
+1. **Never commit your `.env` file to version control**. Make sure it's included in your `.gitignore` file.
+2. **Set environment variables in your deployment platform**:
+   - For Vercel: Use the Environment Variables section in your project settings
+   - For Netlify: Use the Environment Variables section in your site settings
+   - For other platforms: Refer to their documentation on how to set environment variables
+
+3. **Local Development**: Use a `.env.local` file for local development, which is automatically ignored by Git.
+
+If environment variables are missing, the application will display an error message in the console, but will still attempt to initialize the Supabase client to prevent runtime errors.
+
 ### Using Supabase in Components
 
 Import the Supabase client in your components to use it:
