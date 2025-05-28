@@ -3,13 +3,13 @@ import { useEffect } from "react";
 
 export default function CompleteProfilePage() {
   useEffect(() => {
-    // Si l’URL contient un hash, on le retire et on recharge la page
     if (window.location.hash) {
       const cleanUrl = window.location.pathname + window.location.search;
       window.history.replaceState(null, "", cleanUrl);
-      // Optionnel : tu peux recharger la page si besoin
+      // Recharge uniquement si le hash était présent
       window.location.reload();
     }
+    // Sinon, ne rien faire : la session Supabase sera bien lue
   }, []);
 
   return (
