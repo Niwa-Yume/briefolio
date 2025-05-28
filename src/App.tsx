@@ -7,6 +7,7 @@ import BlogPage from "@/pages/blog";
 import AboutPage from "@/pages/about";
 import RegisterPage from "@/pages/register";
 import LoginPage from "@/pages/login";
+import CompleteProfilePage from "@/pages/complete-profile";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route element={<AboutPage />} path="/about" />
       <Route element={<RegisterPage />} path="/register" />
       <Route element={<LoginPage />} path="/login" />
+      <Route element={<CompleteProfilePage />} path="/complete-profile" />
     </Routes>
   );
 }

@@ -21,14 +21,23 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/complete-profile`
+        }
       });
 
       if (error) throw error;
 
-      setSuccess("Inscription réussie! Veuillez vérifier votre email pour confirmer votre compte.");
+      if (data.user && data.session) {
+        // Si l'utilisateur est immédiatement authentifié
+        window.location.href = "/complete-profile";
+      } else {
+        // Sinon, afficher le message de vérification email
+        setSuccess("Inscription réussie! Veuillez vérifier votre email pour confirmer votre compte.");
+      }
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de l'inscription.");
     } finally {
@@ -45,7 +54,7 @@ export default function RegisterPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: `/complete-profile`,
         },
       });
 
@@ -65,7 +74,7 @@ export default function RegisterPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: `/complete-profile`,
         },
       });
 

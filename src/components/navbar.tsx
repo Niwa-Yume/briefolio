@@ -8,7 +8,7 @@ import {
   NavbarItem,
   NavbarMenuToggle,
   NavbarMenu,
-  NavbarMenuItem,
+  NavbarMenuItem
 } from "@heroui/navbar";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
@@ -19,10 +19,11 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {
   GithubIcon,
-  SearchIcon,
+  SearchIcon
 } from "@/components/icons";
 import { Logo } from "@/components/icons";
 import { supabase } from "@/lib/supabase";
+import { createDefaultProfile } from "@/lib/profileService";
 import { Button } from "@/components/ui/button";
 
 // Composant principal de la barre de navigation
@@ -32,20 +33,21 @@ export const Navbar = () => {
   const [loading, setLoading] = useState(true);
 
   // Vérifier l'état d'authentification au chargement du composant
+// Ajoutez ces logs de debug dans votre useEffect pour identifier le problème
+
   useEffect(() => {
-    // Récupérer la session actuelle
     const getSession = async () => {
+      console.log("🔄 Début de getSession()");
       try {
         const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Erreur lors de la récupération de la session:", error);
-          return;
-        }
-
-        // Mettre à jour l'état utilisateur
+        if (error) throw error;
         setUser(data.session?.user || null);
+
+        if (data.session?.user) {
+          await createDefaultProfile(data.session.user.id);
+        }
       } catch (error) {
-        console.error("Erreur inattendue:", error);
+        console.error("❌ Erreur:", error);
       } finally {
         setLoading(false);
       }
@@ -53,27 +55,39 @@ export const Navbar = () => {
 
     getSession();
 
-    // S'abonner aux changements d'authentification
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+    // Configuration du listener d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log("🔄 Auth state change:", event);
         setUser(session?.user || null);
+
+        if (event === "SIGNED_IN" && session?.user) {
+          await createDefaultProfile(session.user.id);
+        }
       }
     );
 
-    // Nettoyer l'abonnement lors du démontage du composant
+    // Nettoyage du listener
     return () => {
-      authListener?.subscription?.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
-  // Fonction pour se déconnecter
+// État de déconnexion
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+// Fonction de déconnexion
   const handleLogout = async () => {
     try {
+      setIsLoggingOut(true);
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      // La redirection sera gérée par le listener onAuthStateChange
+
+      setUser(null);
     } catch (error) {
-      console.error("Erreur lors de la déconnexion:", error);
+      console.error("Erreur de déconnexion:", error);
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -83,7 +97,7 @@ export const Navbar = () => {
       aria-label="Rechercher..." // Accessibilité : étiquette pour les lecteurs d'écran
       classNames={{
         inputWrapper: "bg-default-100", // Style du conteneur
-        input: "text-sm", // Style du champ de saisie
+        input: "text-sm" // Style du champ de saisie
       }}
       endContent={
         <Kbd className="hidden lg:inline-block" keys={["command"]}>
@@ -119,35 +133,35 @@ export const Navbar = () => {
           {siteConfig.navItems
             .filter(item => user ? (item.href !== "/register" && item.href !== "/login") : true)
             .map((item) => (
-            <NavbarItem key={item.href}>
-              <Link
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </Link>
-            </NavbarItem>
-          ))}
+              <NavbarItem key={item.href}>
+                <Link
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  )}
+                  color="foreground"
+                  href={item.href}
+                >
+                  {item.label}
+                </Link>
+              </NavbarItem>
+            ))}
         </div>
       </NavbarContent>
 
       {/* Contenu de droite */}
       <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
+        className="flex basis-1/5 sm:basis-full"
         justify="end"
       >
         {/* Boutons d'authentification */}
-        {!loading && (
+        {(
           <>
             {user ? (
               // Utilisateur connecté: afficher email et bouton de déconnexion
-              <NavbarItem className="hidden sm:flex gap-2 items-center">
+              <NavbarItem className="flex gap-2 items-center">
                 <span className="text-sm">{user.email}</span>
-                <Button 
+                <Button
                   onClick={handleLogout}
                   variant="ghost"
                   className="text-sm"
@@ -157,7 +171,7 @@ export const Navbar = () => {
               </NavbarItem>
             ) : (
               // Utilisateur non connecté: afficher boutons de connexion et d'inscription
-              <NavbarItem className="hidden sm:flex gap-2">
+              <NavbarItem className="lg:flex gap-2">
                 <Link href="/login">
                   <Button variant="ghost" className="text-sm">
                     Connexion
@@ -165,7 +179,7 @@ export const Navbar = () => {
                 </Link>
                 <Link href="/register">
                   <Button className="text-sm">
-                    S'inscrire
+                    inscription
                   </Button>
                 </Link>
               </NavbarItem>
@@ -174,7 +188,7 @@ export const Navbar = () => {
         )}
 
         {/* Icônes sociales */}
-        <NavbarItem className="hidden sm:flex gap-2">
+        <NavbarItem className="flex gap-2">
           <ThemeSwitch /> {/* Switch (clair/sombre) */}
         </NavbarItem>
 
@@ -239,7 +253,7 @@ export const Navbar = () => {
                       href="/register"
                       size="lg"
                     >
-                      S'inscrire
+                      inscription
                     </Link>
                   </NavbarMenuItem>
                 </>

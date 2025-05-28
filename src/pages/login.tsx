@@ -27,8 +27,8 @@ export default function LoginPage() {
 
       if (error) throw error;
 
-      // Redirect to home page or dashboard after successful login
-      window.location.href = "/";
+      // Redirect to complete profile page after successful login
+      window.location.href = "/complete-profile";
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion.");
     } finally {
@@ -45,7 +45,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: `${window.location.origin}/complete-profile`,
         },
       });
 
@@ -65,7 +65,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: `${window.location.origin}/complete-profile`,
         },
       });
 
