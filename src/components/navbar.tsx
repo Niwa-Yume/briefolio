@@ -33,12 +33,16 @@ export const Navbar = () => {
   useEffect(() => {
     // Récupérer la session actuelle
     const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setLoading(false);
-
-      if (session?.user) {
-        await createDefaultProfile(session.user.id);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await createDefaultProfile(session.user.id);
+        }
+      } catch (e) {
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 
