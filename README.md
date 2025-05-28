@@ -59,6 +59,15 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
+For deployment on platforms like Vercel, you can also use the React-style environment variables:
+
+```bash
+REACT_APP_SUPABASE_URL=your_supabase_url
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+The application is configured to check for both types of environment variables, with VITE_ prefixed variables taking precedence.
+
 You can find these values in your Supabase project dashboard under Project Settings > API.
 
 ### Secure Environment Variables for Deployment
