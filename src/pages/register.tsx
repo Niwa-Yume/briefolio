@@ -56,7 +56,7 @@ export default function RegisterPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `/complete-profile`,
+          redirectTo: `${window.location.origin}/complete-profile`,
         },
       });
 
@@ -76,7 +76,7 @@ export default function RegisterPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `/complete-profile`,
+          redirectTo: `${window.location.origin}/complete-profile`,
         },
       });
 
