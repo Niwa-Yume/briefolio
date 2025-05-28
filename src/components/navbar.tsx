@@ -78,7 +78,7 @@ export const Navbar = () => {
       await supabase.auth.signOut();
       setTimeout(() => {
         navigate("/login");
-      }, 100);
+      }, 500);
     } catch (e) {
     } finally {
       setLoading(false);
