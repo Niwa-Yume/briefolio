@@ -60,7 +60,7 @@ export const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    supabase.auth.signOut();
     window.location.replace('/login'); // force un vrai rechargement
   };
 
