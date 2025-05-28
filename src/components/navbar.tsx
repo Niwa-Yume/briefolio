@@ -61,8 +61,7 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setUser(null); // Met à jour l'état local
-    window.location.href = '/login'; // Redirige vers la page de connexion
+    window.location.replace('/login'); // force un vrai rechargement
   };
 
   const searchInput = (
