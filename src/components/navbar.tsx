@@ -28,9 +28,10 @@ import { Button } from "@/components/ui/button";
 
 // Composant principal de la barre de navigation
 export const Navbar = () => {
-  // État pour suivre si l'utilisateur est connecté
+  // États séparés pour une meilleure gestion
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Vérifier l'état d'authentification au chargement du composant
   useEffect(() => {
@@ -38,16 +39,28 @@ export const Navbar = () => {
       console.log("🔄 Début de getSession()");
       try {
         const { data, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        setUser(data.session?.user || null);
+        if (error) {
+          console.error("❌ Erreur lors de la récupération de la session:", error);
+          throw error;
+        }
 
-        if (data.session?.user) {
-          await createDefaultProfile(data.session.user.id);
+        const currentUser = data.session?.user || null;
+        setUser(currentUser);
+
+        // Créer le profil par défaut si l'utilisateur est connecté
+        if (currentUser) {
+          try {
+            await createDefaultProfile(currentUser.id);
+          } catch (profileError) {
+            console.error("❌ Erreur lors de la création du profil:", profileError);
+            // Ne pas bloquer l'authentification si la création du profil échoue
+          }
         }
       } catch (error) {
-        console.error("❌ Erreur:", error);
+        console.error("❌ Erreur lors de l'initialisation:", error);
+        setUser(null);
       } finally {
-        setLoading(false);
+        setIsInitializing(false);
       }
     };
 
@@ -56,11 +69,23 @@ export const Navbar = () => {
     // Configuration du listener d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log("🔄 Auth state change:", event);
-        setUser(session?.user || null);
+        console.log("🔄 Auth state change:", event, session?.user?.email || 'no user');
 
-        if (event === "SIGNED_IN" && session?.user) {
-          await createDefaultProfile(session.user.id);
+        const newUser = session?.user || null;
+        setUser(newUser);
+
+        // Créer le profil par défaut lors de la connexion
+        if (event === "SIGNED_IN" && newUser) {
+          try {
+            await createDefaultProfile(newUser.id);
+          } catch (profileError) {
+            console.error("❌ Erreur lors de la création du profil:", profileError);
+          }
+        }
+
+        // Réinitialiser l'état de déconnexion
+        if (event === "SIGNED_OUT") {
+          setIsLoggingOut(false);
         }
       }
     );
@@ -71,41 +96,56 @@ export const Navbar = () => {
     };
   }, []);
 
-  // État de déconnexion
-  // Correction de la déclaration du state
-
+  // Fonction de déconnexion améliorée
   const handleLogout = async () => {
-    try {
-      setLoading(true); // Maintenant correctement utilisé
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+    console.log("🔄 Début de la déconnexion...");
 
-      setUser(null);
+    try {
+      setIsLoggingOut(true);
+
+      // Déconnexion avec Supabase
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("❌ Erreur Supabase lors de la déconnexion:", error);
+        throw error;
+      }
+
+      console.log("✅ Déconnexion réussie");
+
+      // Le listener onAuthStateChange va gérer la mise à jour de l'état
+      // Donc pas besoin de faire setUser(null) ici
+
     } catch (error) {
-      console.error("Erreur de déconnexion:", error);
-    } finally {
-      setLoading(false); // Maintenant correctement utilisé
+      console.error("❌ Erreur lors de la déconnexion:", error);
+
+      // En cas d'erreur, forcer la déconnexion locale
+      setUser(null);
+      setIsLoggingOut(false);
+
+      // Optionnel : afficher une notification d'erreur à l'utilisateur
+      alert("Erreur lors de la déconnexion. Vous avez été déconnecté localement.");
     }
   };
 
   // Champ de recherche avec une icône et un raccourci clavier (Cmd+K)
   const searchInput = (
     <Input
-      aria-label="Rechercher..." // Accessibilité : étiquette pour les lecteurs d'écran
+      aria-label="Rechercher..."
       classNames={{
-        inputWrapper: "bg-default-100", // Style du conteneur
-        input: "text-sm" // Style du champ de saisie
+        inputWrapper: "bg-default-100",
+        input: "text-sm"
       }}
       endContent={
         <Kbd className="hidden lg:inline-block" keys={["command"]}>
           K
-        </Kbd> // Affiche "Cmd+K" pour les raccourcis clavier
+        </Kbd>
       }
       labelPlacement="outside"
-      placeholder="Rechercher..." // Texte indicatif dans le champ
+      placeholder="Rechercher..."
       startContent={
         <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      } // Icône de recherche à gauche
+      }
       type="search"
     />
   );
@@ -152,7 +192,7 @@ export const Navbar = () => {
         justify="end"
       >
         {/* Boutons d'authentification */}
-        {(
+        {!isInitializing && (
           <>
             {user ? (
               // Utilisateur connecté: afficher email et bouton de déconnexion
@@ -162,8 +202,9 @@ export const Navbar = () => {
                   onClick={handleLogout}
                   variant="ghost"
                   className="text-sm"
+                  disabled={isLoggingOut}
                 >
-                  Déconnexion
+                  {isLoggingOut ? "Déconnexion..." : "Déconnexion"}
                 </Button>
               </NavbarItem>
             ) : (
@@ -176,7 +217,7 @@ export const Navbar = () => {
                 </Link>
                 <Link href="/register">
                   <Button className="text-sm">
-                    inscription
+                    Inscription
                   </Button>
                 </Link>
               </NavbarItem>
@@ -186,12 +227,11 @@ export const Navbar = () => {
 
         {/* Icônes sociales */}
         <NavbarItem className="flex gap-2">
-          <ThemeSwitch /> {/* Switch (clair/sombre) */}
+          <ThemeSwitch />
         </NavbarItem>
 
         {/* Champ de recherche visible sur les grands écrans */}
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-
       </NavbarContent>
 
       {/* Contenu pour les petits écrans : icônes et menu hamburger */}
@@ -199,16 +239,16 @@ export const Navbar = () => {
         <Link isExternal href={siteConfig.links.github}>
           <GithubIcon className="text-default-500" />
         </Link>
-        <ThemeSwitch /> {/* Commutateur de thème */}
-        <NavbarMenuToggle /> {/* Bouton pour ouvrir le menu */}
+        <ThemeSwitch />
+        <NavbarMenuToggle />
       </NavbarContent>
 
       {/* Menu déroulant pour les petits écrans */}
       <NavbarMenu>
-        {searchInput} {/* Champ de recherche dans le menu */}
+        {searchInput}
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {/* Options d'authentification pour mobile */}
-          {!loading && (
+          {!isInitializing && (
             <>
               {user ? (
                 // Utilisateur connecté
@@ -228,7 +268,7 @@ export const Navbar = () => {
                         handleLogout();
                       }}
                     >
-                      Déconnexion
+                      {isLoggingOut ? "Déconnexion..." : "Déconnexion"}
                     </Link>
                   </NavbarMenuItem>
                 </>
@@ -250,7 +290,7 @@ export const Navbar = () => {
                       href="/register"
                       size="lg"
                     >
-                      inscription
+                      Inscription
                     </Link>
                   </NavbarMenuItem>
                 </>
@@ -266,7 +306,7 @@ export const Navbar = () => {
                 href={item.href || "#"}
                 size="lg"
               >
-                {item.label} {/* Texte du lien */}
+                {item.label}
               </Link>
             </NavbarMenuItem>
           ))}
