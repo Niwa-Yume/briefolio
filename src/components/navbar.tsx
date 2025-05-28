@@ -64,8 +64,16 @@ export const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    supabase.auth.signOut();
-    navigate("/login");  // force un vrai rechargement
+    try {
+      setLoading(true);
+      await supabase.auth.signOut();
+      setUser(null);
+      navigate("/login");
+    } catch (e) {
+      // Optionnel : gestion d’erreur
+    } finally {
+      setLoading(false);
+    }
   };
 
   const searchInput = (
