@@ -35,6 +35,8 @@ export const Navbar = () => {
 
   // Vérifier l'état d'authentification au chargement du composant
   useEffect(() => {
+    console.log("🔄 Initialisation du composant Navbar");
+
     const getSession = async () => {
       console.log("🔄 Début de getSession()");
       try {
@@ -45,17 +47,21 @@ export const Navbar = () => {
         }
 
         const currentUser = data.session?.user || null;
+        console.log("👤 Utilisateur récupéré:", currentUser?.email || 'aucun');
         setUser(currentUser);
 
         // Créer le profil par défaut si l'utilisateur est connecté
         if (currentUser) {
           try {
             await createDefaultProfile(currentUser.id);
+            console.log("✅ Profil par défaut créé/vérifié");
           } catch (profileError) {
             console.error("❌ Erreur lors de la création du profil:", profileError);
             // Ne pas bloquer l'authentification si la création du profil échoue
           }
         }
+
+        console.log("✅ getSession terminé, isInitializing -> false");
       } catch (error) {
         console.error("❌ Erreur lors de l'initialisation:", error);
         setUser(null);
@@ -64,20 +70,22 @@ export const Navbar = () => {
       }
     };
 
-    getSession();
-
-    // Configuration du listener d'authentification
+    // Configuration du listener d'authentification AVANT getSession
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("🔄 Auth state change:", event, session?.user?.email || 'no user');
+        console.log("🔄 Session complète:", session);
 
         const newUser = session?.user || null;
         setUser(newUser);
+
+        console.log("👤 État user mis à jour:", newUser?.email || 'aucun');
 
         // Créer le profil par défaut lors de la connexion
         if (event === "SIGNED_IN" && newUser) {
           try {
             await createDefaultProfile(newUser.id);
+            console.log("✅ Profil créé lors de SIGNED_IN");
           } catch (profileError) {
             console.error("❌ Erreur lors de la création du profil:", profileError);
           }
@@ -85,13 +93,18 @@ export const Navbar = () => {
 
         // Réinitialiser l'état de déconnexion
         if (event === "SIGNED_OUT") {
+          console.log("🔄 SIGNED_OUT - réinitialisation isLoggingOut");
           setIsLoggingOut(false);
         }
       }
     );
 
+    // Exécuter getSession APRÈS avoir configuré le listener
+    getSession();
+
     // Nettoyage du listener
     return () => {
+      console.log("🧹 Nettoyage du listener auth");
       subscription.unsubscribe();
     };
   }, []);
@@ -150,6 +163,16 @@ export const Navbar = () => {
     />
   );
 
+  // Debug: afficher les états actuels
+  console.log("🔍 État du composant:", {
+    user: user?.email || 'null',
+    isInitializing,
+    isLoggingOut
+  });
+
+  // Debug: rendu des boutons auth
+  console.log("🔍 Rendu des boutons auth:", { isInitializing, user: !!user });
+
   return (
     <HeroUINavbar maxWidth="xl" position="sticky">
       {/* Contenu de gauche : logo et liens principaux */}
@@ -197,7 +220,7 @@ export const Navbar = () => {
             {user ? (
               // Utilisateur connecté: afficher email et bouton de déconnexion
               <NavbarItem className="flex gap-2 items-center">
-                <span className="text-sm">{user.email}</span>
+                <span className="text-sm text-green-600">Connecté: {user.email}</span>
                 <Button
                   onClick={handleLogout}
                   variant="ghost"
@@ -210,6 +233,7 @@ export const Navbar = () => {
             ) : (
               // Utilisateur non connecté: afficher boutons de connexion et d'inscription
               <NavbarItem className="lg:flex gap-2">
+                <span className="text-sm text-red-600">Non connecté</span>
                 <Link href="/login">
                   <Button variant="ghost" className="text-sm">
                     Connexion
@@ -223,6 +247,13 @@ export const Navbar = () => {
               </NavbarItem>
             )}
           </>
+        )}
+
+        {/* Debug: affichage de l'état */}
+        {isInitializing && (
+          <NavbarItem>
+            <span className="text-sm text-blue-600">Chargement...</span>
+          </NavbarItem>
         )}
 
         {/* Icônes sociales */}
