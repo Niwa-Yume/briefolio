@@ -33,8 +33,6 @@ export const Navbar = () => {
   const [loading, setLoading] = useState(true);
 
   // Vérifier l'état d'authentification au chargement du composant
-// Ajoutez ces logs de debug dans votre useEffect pour identifier le problème
-
   useEffect(() => {
     const getSession = async () => {
       console.log("🔄 Début de getSession()");
@@ -73,13 +71,12 @@ export const Navbar = () => {
     };
   }, []);
 
-// État de déconnexion
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  // État de déconnexion
+  // Correction de la déclaration du state
 
-// Fonction de déconnexion
   const handleLogout = async () => {
     try {
-      setIsLoggingOut(true);
+      setLoading(true); // Maintenant correctement utilisé
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
 
@@ -87,7 +84,7 @@ export const Navbar = () => {
     } catch (error) {
       console.error("Erreur de déconnexion:", error);
     } finally {
-      setIsLoggingOut(false);
+      setLoading(false); // Maintenant correctement utilisé
     }
   };
 

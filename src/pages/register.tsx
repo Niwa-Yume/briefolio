@@ -25,25 +25,27 @@ export default function RegisterPage() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/complete-profile`
+          data: {
+            needs_profile_completion: true
+          }
         }
       });
 
       if (error) throw error;
 
-      if (data.user && data.session) {
-        // Si l'utilisateur est immédiatement authentifié
+      if (data.session) {
+        // Redirection immédiate si la session est créée
         window.location.href = "/complete-profile";
       } else {
-        // Sinon, afficher le message de vérification email
-        setSuccess("Inscription réussie! Veuillez vérifier votre email pour confirmer votre compte.");
+        setSuccess("Vérifiez votre email pour confirmer votre compte.");
       }
     } catch (err: any) {
-      setError(err.message || "Une erreur s'est produite lors de l'inscription.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
 
   // Function to handle GitHub authentication
   const handleGithubLogin = async () => {

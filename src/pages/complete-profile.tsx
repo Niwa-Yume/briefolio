@@ -72,8 +72,11 @@ export default function CompleteProfilePage() {
         
         <form onSubmit={handleUpdateProfile} className="w-full space-y-4">
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Username</label>
+            <label htmlFor="username" className="block text-sm font-medium mb-1">
+              Username
+            </label>
             <Input
+              id="username"
               type="text"
               aria-label="Username"
               placeholder="Choose a username"
@@ -86,10 +89,13 @@ export default function CompleteProfilePage() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Bio</label>
+            <label htmlFor="bio" className="block text-sm font-medium mb-1">
+              Bio
+            </label>
             <Textarea
+              id="bio"
               aria-label="Bio"
               placeholder="Tell us about yourself..."
               value={bio}
