@@ -76,7 +76,7 @@ export const Navbar = () => {
     try {
       setLoading(true);
       await supabase.auth.signOut();
-      setUser(null);
+      // Ne pas faire setUser(null) ici : l’écouteur onAuthStateChange s’en charge
       navigate("/login");
     } catch (e) {
       // Optionnel : gestion d’erreur
