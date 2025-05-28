@@ -77,6 +77,7 @@ const TextRotate = forwardRef<TextRotateRef, TextRotateProps>(
     // handy function to split text into characters with support for unicode and emojis
     const splitIntoCharacters = (text: string): string[] => {
       if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
+        // @ts-ignore: Intl.Segmenter might not be in TypeScript's types yet
         const segmenter = new Intl.Segmenter("en", { granularity: "grapheme" })
         return Array.from(segmenter.segment(text), ({ segment }) => segment)
       }
@@ -128,7 +129,7 @@ const TextRotate = forwardRef<TextRotateRef, TextRotateProps>(
       const nextIndex = currentTextIndex === texts.length - 1
         ? (loop ? 0 : currentTextIndex)
         : currentTextIndex + 1
-      
+
       if (nextIndex !== currentTextIndex) {
         handleIndexChange(nextIndex)
       }
@@ -138,7 +139,7 @@ const TextRotate = forwardRef<TextRotateRef, TextRotateProps>(
       const prevIndex = currentTextIndex === 0
         ? (loop ? texts.length - 1 : currentTextIndex)
         : currentTextIndex - 1
-      
+
       if (prevIndex !== currentTextIndex) {
         handleIndexChange(prevIndex)
       }

@@ -18,15 +18,15 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      
+
       if (error) throw error;
-      
+
       // Redirect to home page or dashboard after successful login
       window.location.href = "/";
     } catch (err: any) {
@@ -40,15 +40,15 @@ export default function LoginPage() {
   const handleGithubLogin = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
           redirectTo: window.location.origin,
         },
       });
-      
+
       if (error) throw error;
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion avec GitHub.");
@@ -60,13 +60,13 @@ export default function LoginPage() {
     <DefaultLayout>
       <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto mt-10">
         <h1 className="text-3xl font-bold mb-6">Connexion</h1>
-        
+
         {error && (
           <div className="w-full p-3 mb-4 text-sm text-red-500 bg-red-100 rounded-md">
             {error}
           </div>
         )}
-        
+
         {/* GitHub Authentication Button */}
         <Button 
           onClick={handleGithubLogin}
@@ -76,13 +76,13 @@ export default function LoginPage() {
           <GithubIcon className="h-5 w-5" />
           Continuer avec GitHub
         </Button>
-        
+
         <div className="flex items-center w-full my-4">
           <div className="flex-grow h-px bg-gray-300"></div>
           <span className="px-3 text-sm text-gray-500">ou</span>
           <div className="flex-grow h-px bg-gray-300"></div>
         </div>
-        
+
         {/* Email/Password Login Form */}
         <form onSubmit={handleLogin} className="w-full space-y-4">
           <div className="mb-4">
@@ -99,7 +99,7 @@ export default function LoginPage() {
               }}
             />
           </div>
-          
+
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Mot de passe</label>
             <Input
@@ -114,7 +114,7 @@ export default function LoginPage() {
               }}
             />
           </div>
-          
+
           <Button 
             type="submit" 
             className="w-full"
@@ -123,7 +123,7 @@ export default function LoginPage() {
             {loading ? "Chargement..." : "Se connecter"}
           </Button>
         </form>
-        
+
         <p className="mt-6 text-sm text-center">
           Vous n'avez pas de compte?{" "}
           <Link href="/register" color="primary">
