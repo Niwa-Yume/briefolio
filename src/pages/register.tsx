@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
-
+import { useNavigate } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
 import { Button } from "@/components/ui/button";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
@@ -13,6 +13,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // Function to handle email/password registration
   const handleRegister = async (e: React.FormEvent) => {
@@ -35,7 +36,7 @@ export default function RegisterPage() {
 
       if (data.session) {
         // Redirection immédiate si la session est créée
-        window.location.href = "/complete-profile";
+        navigate("/complete-profile")
       } else {
         setSuccess("Vérifiez votre email pour confirmer votre compte.");
       }
