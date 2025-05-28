@@ -131,11 +131,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarContent className="flex basis-1/5 sm:basis-full" justify="end">
-        {loading ? (
-          <NavbarItem>
-            <span className="text-sm">Chargement...</span>
-          </NavbarItem>
-        ) : user ? (
+        { user ? (
           <NavbarItem className="flex gap-2 items-center">
             <span className="text-sm">{user.email}</span>
             <Button
