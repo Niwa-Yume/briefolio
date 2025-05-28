@@ -4,7 +4,7 @@ import { Input } from "@heroui/input";
 
 import DefaultLayout from "@/layouts/default";
 import { Button } from "@/components/ui/button";
-import { GithubIcon } from "@/components/icons";
+import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
@@ -56,6 +56,26 @@ export default function LoginPage() {
     }
   };
 
+  // Function to handle Google authentication
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+
+      if (error) throw error;
+    } catch (err: any) {
+      setError(err.message || "Une erreur s'est produite lors de la connexion avec Google.");
+      setLoading(false);
+    }
+  };
+
   return (
     <DefaultLayout>
       <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto mt-10">
@@ -75,6 +95,16 @@ export default function LoginPage() {
         >
           <GithubIcon className="h-5 w-5" />
           Continuer avec GitHub
+        </Button>
+
+        {/* Google Authentication Button */}
+        <Button 
+          onClick={handleGoogleLogin}
+          className="w-full mb-4 gap-2 bg-white text-gray-800 border border-gray-300 hover:bg-gray-100"
+          disabled={loading}
+        >
+          <GoogleIcon className="h-5 w-5" />
+          Continuer avec Google
         </Button>
 
         <div className="flex items-center w-full my-4">
