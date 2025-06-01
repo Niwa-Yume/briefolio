@@ -30,6 +30,7 @@ export const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -39,6 +40,7 @@ export const Navbar = () => {
           await createDefaultProfile(session.user.id);
         }
       } catch (e) {
+        console.error('Error getting user session:', e);
         setUser(null);
       } finally {
         setLoading(false);
@@ -47,39 +49,40 @@ export const Navbar = () => {
 
     getUser();
 
-    // Correction ici :
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
+        console.log('Auth state changed:', event, session?.user?.email);
+
         if (event === "SIGNED_OUT") {
+          setUser(null);
           navigate("/login");
-        }
-        if (session?.user && event === "SIGNED_IN") {
+        } else if (event === "SIGNED_IN" && session?.user) {
+          setUser(session.user);
           await createDefaultProfile(session.user.id);
         }
+
+        setLoading(false);
       }
     );
 
-    const onStorage = (event: StorageEvent) => {
-      if (event.key === 'supabase.auth.token') {
-        getUser();
-      }
-    };
-    window.addEventListener('storage', onStorage);
-
     return () => {
       subscription.unsubscribe();
-      window.removeEventListener('storage', onStorage);
     };
-  }, []);
+  }, [navigate]);
+
   const handleLogout = async () => {
     try {
       setLoading(true);
-      await supabase.auth.signOut();
-      // Ne pas rediriger ici, la redirection se fait dans onAuthStateChange
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error('Error signing out:', error);
+        return;
+      }
+
+      // The navigation will be handled by onAuthStateChange
     } catch (e) {
-      // gestion d’erreur éventuelle
+      console.error('Error during logout:', e);
     } finally {
       setLoading(false);
     }
@@ -93,7 +96,7 @@ export const Navbar = () => {
         input: "text-sm"
       }}
       endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}>
+        <Kbd className="hidden lg:inline-block\" keys={["command"]}>
           K
         </Kbd>
       }
@@ -140,15 +143,16 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarContent className="flex basis-1/5 sm:basis-full" justify="end">
-        { user ? (
+        {user ? (
           <NavbarItem className="flex gap-2 items-center">
             <span className="text-sm">{user.email}</span>
             <Button
               onClick={handleLogout}
               variant="ghost"
               className="text-sm"
+              disabled={loading}
             >
-              Déconnexion
+              {loading ? 'Déconnexion...' : 'Déconnexion'}
             </Button>
           </NavbarItem>
         ) : (

@@ -23,19 +23,17 @@ export async function upsertProfile(
       .single();
 
     // Prepare profile data
-    const profileData = {
+    const profileData: Record<string, any> = {
       id: userId,
-      updated_at: new Date().toISOString(),
     };
 
     // Only add defined fields to avoid overwriting with null/undefined
-    if (username) profileData['username'] = username;
-    if (bio) profileData['bio'] = bio;
-    if (avatarUrl) profileData['avatar_url'] = avatarUrl;
+    if (username) profileData.username = username;
+    if (bio) profileData.bio = bio;
+    if (avatarUrl) profileData.avatar_url = avatarUrl;
 
     // If profile exists, update it, otherwise insert new profile
     if (existingProfile) {
-      // Don't update fields that aren't provided
       const { error } = await supabase
         .from('profiles')
         .update(profileData)
@@ -44,9 +42,6 @@ export async function upsertProfile(
       if (error) throw error;
       return { success: true, message: 'Profile updated successfully' };
     } else {
-      // For new profiles, ensure we have an id and created_at
-      profileData['created_at'] = profileData.updated_at;
-      
       const { error } = await supabase
         .from('profiles')
         .insert([profileData]);
@@ -66,15 +61,29 @@ export async function upsertProfile(
  * @returns Promise with the result of the operation
  */
 export async function createDefaultProfile(userId: string) {
-  // Generate a random username based on the user ID
-  // This is just a placeholder - in a real app, you might want to
-  // derive this from the user's email or let them choose it later
-  const randomUsername = `user_${userId.substring(0, 8)}`;
-  
-  return upsertProfile(
-    userId,
-    randomUsername,
-    'Tell us about yourself...',
-    null
-  );
+  try {
+    // Check if profile already exists first
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (existingProfile) {
+      return { success: true, message: 'Profile already exists' };
+    }
+
+    // Generate a random username based on the user ID
+    const randomUsername = `user_${userId.substring(0, 8)}`;
+
+    return upsertProfile(
+      userId,
+      randomUsername,
+      'Tell us about yourself...',
+      null
+    );
+  } catch (error) {
+    console.error('Error creating default profile:', error);
+    return { success: false, error };
+  }
 }
