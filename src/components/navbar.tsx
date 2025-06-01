@@ -38,7 +38,7 @@ export const Navbar = () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           setUser(session.user);
-          await createDefaultProfile(session.user.id);
+
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
