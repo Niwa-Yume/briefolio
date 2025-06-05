@@ -45,7 +45,7 @@ export default function CompleteProfilePage() {
 
     if (avatarFile) {
       const fileExt = avatarFile.name.split(".").pop();
-      const filePath = `avatars/${user.id}.${fileExt}`;
+      const filePath = `${user.id}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(filePath, avatarFile, { upsert: true });
