@@ -3,6 +3,7 @@ import { Input } from "@heroui/input";
 import { Spinner } from "@heroui/spinner";
 import { useEffect } from "react";
 
+import { supabase } from "@/lib/supabase";
 import DefaultLayout from "@/layouts/default";
 import { useAuth } from "@/contexts/AuthContext";
 import { upsertProfile } from "@/lib/profileService";
@@ -14,6 +15,7 @@ export default function CompleteProfilePage() {
   const [bio, setBio] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   useEffect(() => {
     // Nettoyer l'URL dès que possible
@@ -22,6 +24,12 @@ export default function CompleteProfilePage() {
       window.history.replaceState(null, "", window.location.pathname);
     }
   }, []);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setAvatarFile(e.target.files[0]);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +40,32 @@ export default function CompleteProfilePage() {
 
       return;
     }
-    const { success, error } = await upsertProfile(user.id, username, bio);
+
+    let avatarUrl = null;
+
+    if (avatarFile) {
+      const fileExt = avatarFile.name.split(".").pop();
+      const filePath = `avatars/${user.id}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, avatarFile, { upsert: true });
+
+      if (uploadError) {
+        setError("Erreur lors de l'upload de l'avatar.");
+
+        return;
+      }
+      const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+
+      avatarUrl = data.publicUrl;
+    }
+
+    const { success, error } = await upsertProfile(
+      user.id,
+      username,
+      bio,
+      avatarUrl,
+    );
 
     if (success) {
       setSuccess("Profil mis à jour !");
@@ -69,6 +102,12 @@ export default function CompleteProfilePage() {
             placeholder="Quelques mots sur vous"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
+          />
+          <Input
+            accept="image/*"
+            label="Avatar"
+            type="file"
+            onChange={handleAvatarChange}
           />
           <Button type="submit">Enregistrer</Button>
         </form>
