@@ -44,8 +44,6 @@ export default function CompleteProfilePage() {
     let avatarUrl = null;
 
     if (avatarFile) {
-      const fileExt = avatarFile.name.split(".").pop();
-
       if (!avatarFile.type.startsWith("image/")) {
         setError("Le fichier doit être une image.");
         return;
@@ -55,18 +53,16 @@ export default function CompleteProfilePage() {
         return;
       }
 
-      const filePath = `${user.id}.${fileExt}`;
+      const fileName = `${crypto.randomUUID()}-${avatarFile.name}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(filePath, avatarFile, { upsert: true });
+        .upload(fileName, avatarFile, { upsert: true });
 
       if (uploadError) {
         setError("Erreur lors de l'upload de l'avatar.");
-
         return;
       }
-      const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
-
+      const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
       avatarUrl = data.publicUrl;
     }
 
