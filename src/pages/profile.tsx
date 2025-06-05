@@ -1,28 +1,19 @@
 import { useEffect, useState } from "react";
-import DefaultLayout from "@/layouts/default";
-import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabase";
+import { Card, CardHeader, CardBody } from "@heroui/react";
 import { Spinner } from "@heroui/spinner";
-
-type Profile = {
-  username: string;
-  bio: string;
-  avatar_url: string;
-};
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Record<string, any> | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) return;
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("username, bio, avatar_url")
-        .eq("id", user.id)
-        .single();
+      const { data, error } = await import("@/lib/supabase").then(m =>
+        m.supabase.from("profiles").select("*").eq("id", user.id).single()
+      );
       if (error) setError("Erreur lors du chargement du profil.");
       else setProfile(data);
     };
@@ -31,49 +22,55 @@ export default function ProfilePage() {
 
   if (loading || !user) {
     return (
-      <DefaultLayout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <Spinner />
-        </div>
-      </DefaultLayout>
+      <div className="flex items-center justify-center h-[60vh]">
+        <Spinner />
+      </div>
     );
   }
 
   if (error) {
     return (
-      <DefaultLayout>
-        <div className="flex items-center justify-center h-[60vh] text-red-500">
-          {error}
-        </div>
-      </DefaultLayout>
+      <div className="flex items-center justify-center h-[60vh] text-red-500">
+        {error}
+      </div>
     );
   }
 
   if (!profile) {
     return (
-      <DefaultLayout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <Spinner />
-        </div>
-      </DefaultLayout>
+      <div className="flex items-center justify-center h-[60vh]">
+        <Spinner />
+      </div>
     );
   }
 
   return (
-    <DefaultLayout>
-      <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto mt-10">
-        <h1 className="text-3xl font-bold mb-6">Mon profil</h1>
-        {profile.avatar_url && (
-          <img
-            src={profile.avatar_url}
-            alt="Avatar"
-            className="w-24 h-24 rounded-full mb-4 object-cover"
-          />
-        )}
-        <div className="text-lg font-semibold mb-2">{profile.username}</div>
-        <div className="text-gray-600 mb-4">{profile.bio}</div>
-        <div className="text-sm text-gray-400">Email: {user.email}</div>
-      </div>
-    </DefaultLayout>
+    <div className="flex justify-center mt-10">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <h1 className="text-2xl font-bold">Mon profil</h1>
+        </CardHeader>
+        <CardBody>
+          <ul className="space-y-2">
+            {Object.entries(profile).map(([key, value]) => (
+              <li key={key} className="flex justify-between">
+                <span className="font-medium">{key}</span>
+                <span>
+                  {typeof value === "string" && value.startsWith("http") ? (
+                    <a href={value} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">
+                      {value}
+                    </a>
+                  ) : value === null ? (
+                    <span className="italic text-gray-400">null</span>
+                  ) : (
+                    value.toString()
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </CardBody>
+      </Card>
+    </div>
   );
 }

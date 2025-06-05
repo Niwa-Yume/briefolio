@@ -10,6 +10,7 @@ import RegisterPage from "@/pages/register";
 import LoginPage from "@/pages/login";
 import CompleteProfilePage from "@/pages/complete-profile";
 import { ProfileCompletionGuard } from "@/components/ProfileCompletionGuard";
+import ProfilePage from "@/pages/profile.tsx";
 
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
       <Route element={<IndexPage />} path="/" />
       <Route element={<Monthly />} path="/monthly" />
       <Route element={<CategoryPage />} path="/category" />
-      <Route element={<BlogPage />} path="/blog" />
+      <Route element={<ProfilePage />} path="/profile" />
       <Route element={<AboutPage />} path="/about" />
       <Route element={<RegisterPage />} path="/register" />
       <Route element={<LoginPage />} path="/login" />
