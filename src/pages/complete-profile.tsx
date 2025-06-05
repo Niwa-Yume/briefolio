@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Input } from "@heroui/input";
 import { Spinner } from "@heroui/spinner";
-
+import { useEffect } from "react";
 import DefaultLayout from "@/layouts/default";
 import { useAuth } from "@/contexts/AuthContext";
 import { upsertProfile } from "@/lib/profileService";
