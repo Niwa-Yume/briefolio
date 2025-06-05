@@ -11,6 +11,8 @@ type AuthContextType = {
   register: (email: string, password: string) => Promise<void>;
   loginWithProvider: (provider: "google" | "github") => Promise<void>;
   logout: () => Promise<void>;
+  justSignedIn: boolean;
+  setJustSignedIn: (v: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +21,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [justSignedIn, setJustSignedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,11 +36,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
           setUser(session.user);
-          if (window.location.pathname !== "/complete-profile") {
-            navigate("/complete-profile");
-          }
-        }else if (event === "SIGNED_OUT") {
+          setJustSignedIn(true); // Marque qu'on vient de se connecter
+        } else if (event === "SIGNED_OUT") {
           setUser(null);
+          setJustSignedIn(false);
           navigate("/login");
         }
       }
@@ -96,7 +98,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, register, loginWithProvider, logout }}>
+    <AuthContext.Provider value={{
+      user, loading, error, login, register, loginWithProvider, logout,
+      justSignedIn, setJustSignedIn
+    }}>
       {children}
     </AuthContext.Provider>
   );
