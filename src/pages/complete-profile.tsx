@@ -8,7 +8,8 @@ import DefaultLayout from "@/layouts/default";
 import { useAuth } from "@/contexts/AuthContext";
 import { upsertProfile } from "@/lib/profileService";
 import { Button } from "@/components/ui/button";
-
+import { supabase } from "@/lib/supabase";
+(window as any).supabase = supabase;
 export default function CompleteProfilePage() {
   const { user, loading } = useAuth();
   const [username, setUsername] = useState("");
