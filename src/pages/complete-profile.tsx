@@ -38,6 +38,7 @@ export default function CompleteProfilePage() {
     const bio = formData.get("bio") as string;
 
     const newErrors: Record<string, string> = {};
+
     if (!username) newErrors.username = "Le nom d'utilisateur est requis.";
     if (avatarFile) {
       if (!avatarFile.type.startsWith("image/")) {
