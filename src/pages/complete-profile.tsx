@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input } from "@heroui/input";
 import { Spinner } from "@heroui/spinner";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import DefaultLayout from "@/layouts/default";
 import { useAuth } from "@/contexts/AuthContext";
 import { upsertProfile } from "@/lib/profileService";
@@ -14,22 +14,14 @@ export default function CompleteProfilePage() {
   const [bio, setBio] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Nettoyer l'URL dès que possible
     if (window.location.hash) {
       // Supprime le hash et ses paramètres
-      window.history.replaceState(null, '', window.location.pathname);
+      window.history.replaceState(null, "", window.location.pathname);
     }
   }, []);
-
-  useEffect(() => {
-    // Rediriger si l'utilisateur est connecté
-    if (user && !loading) {
-      navigate('/complete-profile', { replace: true });
-    }
-  }, [user, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
