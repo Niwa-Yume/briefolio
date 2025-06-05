@@ -33,14 +33,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
           setUser(session.user);
-          // Vérifie si le profil doit être complété
-          if (
-            session.user.user_metadata?.needs_profile_completion &&
-            window.location.pathname !== "/complete-profile"
-          ) {
+          if (window.location.pathname !== "/complete-profile") {
             navigate("/complete-profile");
           }
-        } else if (event === "SIGNED_OUT") {
+        }else if (event === "SIGNED_OUT") {
           setUser(null);
           navigate("/login");
         }
