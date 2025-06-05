@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/react";
 import { Spinner } from "@heroui/spinner";
 import { useAuth } from "@/contexts/AuthContext";
-
+import { supabase } from "@/lib/supabase";
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const [profile, setProfile] = useState<Record<string, any> | null>(null);
@@ -11,9 +11,11 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) return;
-      const { data, error } = await import("@/lib/supabase").then(m =>
-        m.supabase.from("profiles").select("*").eq("id", user.id).single()
-      );
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
       if (error) setError("Erreur lors du chargement du profil.");
       else setProfile(data);
     };
