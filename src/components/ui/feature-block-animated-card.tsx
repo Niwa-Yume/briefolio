@@ -52,19 +52,20 @@ export function AnimatedCard({ className, title, description, icons = [] }: Anim
 function AnimatedIcons({ icons }: { icons: AnimatedCardProps["icons"] }) {
   const scale = [1, 1.1, 1]
   const transform = ["translateY(0px)", "translateY(-4px)", "translateY(0px)"]
-  
-  const sequence = icons.map((_, index) => [
-    `.circle-${index + 1}`,
-    { scale, transform },
-    { duration: 0.8 },
-  ])
 
   useEffect(() => {
-    animate(sequence, {
-      repeat: Infinity,
-      repeatDelay: 1,
-    })
-  }, [])
+    icons.forEach((_, index) => {
+      animate(
+        `.circle-${index + 1}`,
+        { scale, transform },
+        {
+          duration: 0.8,
+          repeat: Infinity,
+          repeatDelay: 1,
+        }
+      );
+    });
+  }, [icons]);
 
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center">
