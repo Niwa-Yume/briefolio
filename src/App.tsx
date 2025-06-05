@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
+import {AuthProvider} from "@/contexts/AuthContext.tsx";
 import IndexPage from "@/pages/index";
 import Monthly from "@/pages/monthly.tsx";
 import CategoryPage from "@/pages/category";
@@ -11,7 +12,8 @@ import CompleteProfilePage from "@/pages/complete-profile";
 
 function App() {
   return (
-    <Routes>
+    <AuthProvider>
+      <Routes>
       <Route element={<IndexPage />} path="/" />
       <Route element={<Monthly />} path="/monthly" />
       <Route element={<CategoryPage />} path="/category" />
@@ -21,6 +23,7 @@ function App() {
       <Route element={<LoginPage />} path="/login" />
       <Route element={<CompleteProfilePage />} path="/complete-profile" />
     </Routes>
+    </AuthProvider>
   );
 }
 

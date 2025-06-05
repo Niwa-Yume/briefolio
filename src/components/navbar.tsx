@@ -8,87 +8,31 @@ import {
   NavbarItem,
   NavbarMenuToggle,
   NavbarMenu,
-  NavbarMenuItem
+  NavbarMenuItem,
 } from "@heroui/navbar";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  GithubIcon,
-  SearchIcon
-} from "@/components/icons";
+import { GithubIcon, SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
-import { supabase } from "@/lib/supabase";
-import { createDefaultProfile } from "@/lib/profileService";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext.tsx";
 
 export const Navbar = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          setUser(session.user);
-
-        }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-      } finally {
-        setIsInitializing(false);
-      }
-    };
-
-    initializeAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "SIGNED_IN" && session?.user) {
-          setUser(session.user);
-          await createDefaultProfile(session.user.id);
-        } else if (event === "SIGNED_OUT") {
-          setUser(null);
-        }
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      setIsLoading(true);
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        console.error('Error signing out:', error);
-        return;
-      }
-
-      navigate('/login');
-    } catch (error) {
-      console.error('Error during logout:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const searchInput = (
     <Input
       aria-label="Rechercher..."
       classNames={{
         inputWrapper: "bg-default-100",
-        input: "text-sm"
+        input: "text-sm",
       }}
       endContent={
         <Kbd className="hidden lg:inline-block\" keys={["command"]}>
@@ -104,9 +48,17 @@ export const Navbar = () => {
     />
   );
 
-  if (isInitializing) {
-    return <div className="flex items-center justify-center p-4">Chargement...</div>;
-  }
+  const handleLogout = async () => {
+    try {
+      setIsLoading(true);
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <HeroUINavbar maxWidth="xl" position="sticky">
@@ -117,19 +69,21 @@ export const Navbar = () => {
             color="foreground"
             href="/"
           >
-            <Logo size={120} height={120} />
+            <Logo height={120} size={120} />
           </Link>
         </NavbarBrand>
 
         <div className="hidden lg:flex gap-4 justify-start ml-2">
           {siteConfig.navItems
-            .filter(item => user ? (item.href !== "/register" && item.href !== "/login") : true)
+            .filter((item) =>
+              user ? item.href !== "/register" && item.href !== "/login" : true,
+            )
             .map((item) => (
               <NavbarItem key={item.href}>
                 <Link
                   className={clsx(
                     linkStyles({ color: "foreground" }),
-                    "data-[active=true]:text-primary data-[active=true]:font-medium"
+                    "data-[active=true]:text-primary data-[active=true]:font-medium",
                   )}
                   color="foreground"
                   href={item.href}
@@ -146,25 +100,23 @@ export const Navbar = () => {
           <NavbarItem className="flex gap-2 items-center">
             <span className="text-sm">{user.email}</span>
             <Button
-              onClick={handleLogout}
-              variant="ghost"
               className="text-sm"
               disabled={isLoading}
+              variant="ghost"
+              onClick={handleLogout}
             >
-              {isLoading ? 'Déconnexion...' : 'Déconnexion'}
+              {isLoading ? "Déconnexion..." : "Déconnexion"}
             </Button>
           </NavbarItem>
         ) : (
           <NavbarItem className="lg:flex gap-2">
             <Link href="/login">
-              <Button variant="ghost" className="text-sm">
+              <Button className="text-sm" variant="ghost">
                 Connexion
               </Button>
             </Link>
             <Link href="/register">
-              <Button className="text-sm">
-                Inscription
-              </Button>
+              <Button className="text-sm">Inscription</Button>
             </Link>
           </NavbarItem>
         )}
@@ -229,11 +181,7 @@ export const Navbar = () => {
 
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color="foreground"
-                href={item.href || "#"}
-                size="lg"
-              >
+              <Link color="foreground" href={item.href || "#"} size="lg">
                 {item.label}
               </Link>
             </NavbarMenuItem>

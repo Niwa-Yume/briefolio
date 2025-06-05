@@ -1,12 +1,7 @@
 import { supabase } from './supabase';
 
 /**
- * Creates or updates a user profile in the profiles table
- * @param userId - The user's UUID from auth.user
- * @param username - Optional username for the profile
- * @param bio - Optional bio for the profile
- * @param avatarUrl - Optional avatar URL for the profile
- * @returns Promise with the result of the operation
+ * Met à jour ou crée un profil utilisateur sans écraser les champs non fournis.
  */
 export async function upsertProfile(
   userId: string,
@@ -15,75 +10,43 @@ export async function upsertProfile(
   avatarUrl?: string
 ) {
   try {
-    // Check if profile already exists
+    // Récupère le profil existant
     const { data: existingProfile } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single();
 
-    // Prepare profile data
-    const profileData: Record<string, any> = {
-      id: userId,
-    };
+    // Prépare les données à mettre à jour
+    const profileData: Record<string, any> = {};
+    if (username !== undefined) profileData.username = username;
+    if (bio !== undefined) profileData.bio = bio;
+    if (avatarUrl !== undefined) profileData.avatar_url = avatarUrl;
 
-    // Only add defined fields to avoid overwriting with null/undefined
-    if (username) profileData.username = username;
-    if (bio) profileData.bio = bio;
-    if (avatarUrl) profileData.avatar_url = avatarUrl;
-
-    // If profile exists, update it, otherwise insert new profile
+    let result;
     if (existingProfile) {
-      const { error } = await supabase
+      // Met à jour uniquement les champs fournis
+      const { data, error } = await supabase
         .from('profiles')
         .update(profileData)
-        .eq('id', userId);
-
+        .eq('id', userId)
+        .select()
+        .single();
       if (error) throw error;
-      return { success: true, message: 'Profile updated successfully' };
+      result = data;
     } else {
-      const { error } = await supabase
+      // Crée un nouveau profil
+      const { data, error } = await supabase
         .from('profiles')
-        .insert([profileData]);
-
+        .insert([{ id: userId, ...profileData }])
+        .select()
+        .single();
       if (error) throw error;
-      return { success: true, message: 'Profile created successfully' };
+      result = data;
     }
+    return { success: true, profile: result };
   } catch (error) {
     console.error('Error upserting profile:', error);
-    return { success: false, error };
-  }
-}
-
-/**
- * Creates a default profile for a new user
- * @param userId - The user's UUID from auth.user
- * @returns Promise with the result of the operation
- */
-export async function createDefaultProfile(userId: string) {
-  try {
-    // Check if profile already exists first
-    const { data: existingProfile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
-
-    if (existingProfile) {
-      return { success: true, message: 'Profile already exists' };
-    }
-
-    // Generate a random username based on the user ID
-    const randomUsername = `user_${userId.substring(0, 8)}`;
-
-    return upsertProfile(
-      userId,
-      randomUsername,
-      'Tell us about yourself...',
-      null
-    );
-  } catch (error) {
-    console.error('Error creating default profile:', error);
     return { success: false, error };
   }
 }

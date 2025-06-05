@@ -5,75 +5,43 @@ import { useNavigate } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
 import { Button } from "@/components/ui/button";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
+  const { login, loginWithProvider, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Function to handle email/password login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
-
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      // Redirect to complete profile page after successful login
+      await login(email, password);
       navigate("/complete-profile");
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion.");
-    } finally {
-      setLoading(false);
     }
   };
 
-  // Function to handle GitHub authentication
   const handleGithubLogin = async () => {
-    setLoading(true);
     setError(null);
-
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: `${window.location.origin}/complete-profile`,
-        },
-      });
-
-      if (error) throw error;
+      await loginWithProvider("github");
+      // Redirection automatique
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion avec GitHub.");
-      setLoading(false);
     }
   };
 
-  // Function to handle Google authentication
   const handleGoogleLogin = async () => {
-    setLoading(true);
     setError(null);
-
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/complete-profile`,
-        },
-      });
-
-      if (error) throw error;
+      await loginWithProvider("google");
+      // Redirection automatique
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion avec Google.");
-      setLoading(false);
     }
   };
 
@@ -88,8 +56,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        {/* GitHub Authentication Button */}
-        <Button 
+        <Button
           onClick={handleGithubLogin}
           className="w-full mb-4 gap-2 bg-gray-800 hover:bg-gray-900"
           disabled={loading}
@@ -98,8 +65,7 @@ export default function LoginPage() {
           Continuer avec GitHub
         </Button>
 
-        {/* Google Authentication Button */}
-        <Button 
+        <Button
           onClick={handleGoogleLogin}
           className="w-full mb-4 gap-2 bg-white text-gray-800 border border-gray-300 hover:bg-gray-100"
           disabled={loading}
@@ -114,7 +80,6 @@ export default function LoginPage() {
           <div className="flex-grow h-px bg-gray-300"></div>
         </div>
 
-        {/* Email/Password Login Form */}
         <form onSubmit={handleLogin} className="w-full space-y-4">
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Email</label>
@@ -146,8 +111,8 @@ export default function LoginPage() {
             />
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full"
             disabled={loading}
           >

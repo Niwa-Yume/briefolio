@@ -5,86 +5,51 @@ import { useNavigate } from "react-router-dom";
 import DefaultLayout from "@/layouts/default";
 import { Button } from "@/components/ui/button";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
-import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterPage() {
+  const { register, loginWithProvider, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Function to handle email/password registration
+  // Inscription email/mot de passe
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
-
+    setSuccess(null);
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            needs_profile_completion: true
-          }
-        }
-      });
-
-      if (error) throw error;
-
-      if (data.session) {
-        // Redirection immédiate si la session est créée
-        navigate("/complete-profile")
-      } else {
-        setSuccess("Vérifiez votre email pour confirmer votre compte.");
-      }
+      await register(email, password);
+      setSuccess("Vérifiez votre email pour confirmer votre compte.");
+      navigate("/complete-profile");
     } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      setError(err.message || "Une erreur s'est produite lors de l'inscription.");
     }
   };
 
-
-  // Function to handle GitHub authentication
+  // OAuth GitHub
   const handleGithubLogin = async () => {
-    setLoading(true);
     setError(null);
-
+    setSuccess(null);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: `${window.location.origin}/complete-profile`,
-        },
-      });
-
-      if (error) throw error;
+      await loginWithProvider("github");
+      // La redirection est gérée automatiquement
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion avec GitHub.");
-      setLoading(false);
     }
   };
 
-  // Function to handle Google authentication
+  // OAuth Google
   const handleGoogleLogin = async () => {
-    setLoading(true);
     setError(null);
-
+    setSuccess(null);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/complete-profile`,
-        },
-      });
-
-      if (error) throw error;
+      await loginWithProvider("google");
+      // La redirection est gérée automatiquement
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion avec Google.");
-      setLoading(false);
     }
   };
 
@@ -105,8 +70,7 @@ export default function RegisterPage() {
           </div>
         )}
 
-        {/* GitHub Authentication Button */}
-        <Button 
+        <Button
           onClick={handleGithubLogin}
           className="w-full mb-4 gap-2 bg-gray-800 hover:bg-gray-900"
           disabled={loading}
@@ -115,8 +79,7 @@ export default function RegisterPage() {
           Continuer avec GitHub
         </Button>
 
-        {/* Google Authentication Button */}
-        <Button 
+        <Button
           onClick={handleGoogleLogin}
           className="w-full mb-4 gap-2 bg-white text-gray-800 border border-gray-300 hover:bg-gray-100"
           disabled={loading}
@@ -131,10 +94,8 @@ export default function RegisterPage() {
           <div className="flex-grow h-px bg-gray-300" />
         </div>
 
-        {/* Email/Password Registration Form */}
         <form onSubmit={handleRegister} className="w-full space-y-4">
           <div className="mb-4">
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
             <label className="block text-sm font-medium mb-1">Email</label>
             <Input
               type="email"
@@ -150,8 +111,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="mb-4">
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            x<label className="block text-sm font-medium mb-1">Mot de passe</label>
+            <label className="block text-sm font-medium mb-1">Mot de passe</label>
             <Input
               type="password"
               aria-label="Mot de passe"
@@ -165,8 +125,8 @@ export default function RegisterPage() {
             />
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full"
             disabled={loading}
           >
