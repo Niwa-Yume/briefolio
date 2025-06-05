@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Form, Input, Button } from "@heroui/react";
 import { Spinner } from "@heroui/spinner";
+import { useNavigate } from "react-router-dom";
+
 import DefaultLayout from "@/layouts/default";
 import { useAuth } from "@/contexts/AuthContext";
 import { upsertProfile } from "@/lib/profileService";
@@ -11,6 +13,7 @@ export default function CompleteProfilePage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (window.location.hash) {
@@ -30,6 +33,7 @@ export default function CompleteProfilePage() {
     setErrors({});
     if (!user) {
       setErrors({ form: "Utilisateur non connecté." });
+
       return;
     }
 
@@ -50,20 +54,25 @@ export default function CompleteProfilePage() {
     }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+
       return;
     }
 
     let avatarUrl = null;
+
     if (avatarFile) {
       const fileName = `${crypto.randomUUID()}-${avatarFile.name}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(fileName, avatarFile, { upsert: true });
+
       if (uploadError) {
         setErrors({ avatar: "Erreur lors de l'upload de l'avatar." });
+
         return;
       }
       const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
+
       avatarUrl = data.publicUrl;
     }
 
@@ -73,10 +82,14 @@ export default function CompleteProfilePage() {
       bio,
       avatarUrl,
     );
+
     if (ok) {
       setSuccess("Profil mis à jour !");
+      navigate("/profile"); // Redirige vers la page profil
     } else {
-      setErrors({ form: error?.message || "Erreur lors de la mise à jour du profil." });
+      setErrors({
+        form: error?.message || "Erreur lors de la mise à jour du profil.",
+      });
     }
   };
 
@@ -103,24 +116,24 @@ export default function CompleteProfilePage() {
           {success && <div className="text-green-500">{success}</div>}
           <Input
             isRequired
-            name="username"
-            label="Nom d'utilisateur"
-            placeholder="Votre pseudo"
             errorMessage={errors.username}
+            label="Nom d'utilisateur"
+            name="username"
+            placeholder="Votre pseudo"
           />
           <Input
-            name="bio"
-            label="Bio"
-            placeholder="Quelques mots sur vous"
             errorMessage={errors.bio}
+            label="Bio"
+            name="bio"
+            placeholder="Quelques mots sur vous"
           />
           <Input
-            name="avatar"
-            label="Avatar"
-            type="file"
             accept="image/*"
-            onChange={e => handleAvatarChange(e.target.files)}
             errorMessage={errors.avatar}
+            label="Avatar"
+            name="avatar"
+            type="file"
+            onChange={(e) => handleAvatarChange(e.target.files)}
           />
           <Button type="submit">Enregistrer</Button>
         </Form>
