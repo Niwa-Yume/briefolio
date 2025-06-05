@@ -98,7 +98,9 @@ export const Navbar = () => {
       <NavbarContent className="flex basis-1/5 sm:basis-full" justify="end">
         {user ? (
           <NavbarItem className="flex gap-2 items-center">
-            <span className="text-sm">{user.email}</span>
+            <Link href="/profile" className="text-sm underline">
+              Mon profil
+            </Link>
             <Button
               className="text-sm"
               disabled={isLoading}
