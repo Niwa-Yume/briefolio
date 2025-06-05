@@ -35,7 +35,7 @@ export default function RegisterPage() {
     setSuccess(null);
     try {
       await loginWithProvider("github");
-      // La redirection est gérée automatiquement
+      // La redirection sera gérée par le useEffect dans CompleteProfilePage
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion avec GitHub.");
     }
@@ -47,7 +47,7 @@ export default function RegisterPage() {
     setSuccess(null);
     try {
       await loginWithProvider("google");
-      // La redirection est gérée automatiquement
+      // La redirection sera gérée par le useEffect dans CompleteProfilePage
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de la connexion avec Google.");
     }

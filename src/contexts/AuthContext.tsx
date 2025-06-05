@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
           setUser(session.user);
-          navigate("/complete-profile");
+          // On ne fait plus la redirection ici
         } else if (event === "SIGNED_OUT") {
           setUser(null);
           navigate("/login");
@@ -74,7 +74,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/complete-profile`
+        // On retire le redirectTo pour gérer la redirection nous-mêmes
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
       }
     });
     setLoading(false);
