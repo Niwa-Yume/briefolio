@@ -67,7 +67,7 @@ const defaultContactMethods: ContactMethod[] = [
 
 const defaultCompanyStats: CompanyStat[] = [
   { label: "Réduisez le temps de recherche", value: "0 recherche", icon: Clock },
-  { label: "Pleins de briefs", value: "500+ rpojet", icon: Globe },
+  { label: "Pleins de briefs", value: "500+ Projet", icon: Globe },
   { label: "Aucun projet inutiles", value: "Projet solides", icon: Shield },
   { label: "Développer un vrai portfolio", value: "Projet innovant", icon: Zap }
 ];
