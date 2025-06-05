@@ -4,7 +4,6 @@ import {AuthProvider} from "@/contexts/AuthContext.tsx";
 import IndexPage from "@/pages/index";
 import Monthly from "@/pages/monthly.tsx";
 import CategoryPage from "@/pages/category";
-import BlogPage from "@/pages/blog";
 import AboutPage from "@/pages/about";
 import RegisterPage from "@/pages/register";
 import LoginPage from "@/pages/login";
