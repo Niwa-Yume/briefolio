@@ -45,6 +45,16 @@ export default function CompleteProfilePage() {
 
     if (avatarFile) {
       const fileExt = avatarFile.name.split(".").pop();
+
+      if (!avatarFile.type.startsWith("image/")) {
+        setError("Le fichier doit être une image.");
+        return;
+      }
+      if (avatarFile.size > 5 * 1024 * 1024) { // 5 Mo
+        setError("L'image est trop volumineuse (max 5 Mo).");
+        return;
+      }
+
       const filePath = `${user.id}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
