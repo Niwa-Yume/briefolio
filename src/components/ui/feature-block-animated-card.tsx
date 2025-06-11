@@ -3,14 +3,14 @@ import React, { useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 export interface AnimatedCardProps {
-  className?: string
-  title?: React.ReactNode
-  description?: React.ReactNode
+  className?: string,
+  title?: React.ReactNode,
+  description?: React.ReactNode,
   icons?: Array<{
-    icon: React.ReactNode
-    size?: "sm" | "md" | "lg"| "xl"| "xxl"
-    className?: string
-  }>
+    icon: React.ReactNode,
+    size?: "sm" | "md" | "lg" | "xl" | "xxl" ,
+    className?: string,
+  }>,
 }
 
 const sizeMap = {
@@ -18,14 +18,14 @@ const sizeMap = {
   md: "h-12 w-12",
   lg: "h-16 w-16",
   xl: "h-32 w-32",
-  xxl: "h-64 w-64",
+  xxl: "h-60 w-64",
 }
 
 export function AnimatedCard({ className, title, description, icons = [] }: AnimatedCardProps) {
   return (
     <div
       className={cn(
-        "max-w-sm w-full mx-auto p-8 rounded-xl border border-[rgba(255,255,255,0.10)] dark:bg-[rgba(40,40,40,0.70)] bg-gray-100 shadow-[2px_4px_16px_0px_rgba(248,248,248,0.06)_inset] group",
+        "max-w-lg w-full mx-auto p-8 rounded-xl border border-[rgba(255,255,255,0.10)] dark:bg-[rgba(40,40,40,0.70)] bg-gray-100 shadow-[2px_4px_16px_0px_rgba(248,248,248,0.06)_inset] group",
         className
       )}
     >
@@ -43,7 +43,7 @@ export function AnimatedCard({ className, title, description, icons = [] }: Anim
         </h3>
       )}
       {description && (
-        <p className="text-sm font-normal text-neutral-600 dark:text-neutral-400 max-w-sm">
+        <p className="text-sm font-normal text-neutral-600 dark:text-neutral-400 max-w-sm margin-left-2">
           {description}
         </p>
       )}
