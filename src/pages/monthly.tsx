@@ -22,7 +22,7 @@ export default function MonthlyPage() {
                 className="object-cover"
               />
             ),
-            size: "lg",
+            size: "xxl",
           },
         ]}
       />

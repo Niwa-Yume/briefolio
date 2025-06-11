@@ -8,7 +8,7 @@ export interface AnimatedCardProps {
   description?: React.ReactNode
   icons?: Array<{
     icon: React.ReactNode
-    size?: "sm" | "md" | "lg"
+    size?: "sm" | "md" | "lg"| "xl"| "xxl"
     className?: string
   }>
 }
@@ -17,6 +17,8 @@ const sizeMap = {
   sm: "h-8 w-8",
   md: "h-12 w-12",
   lg: "h-16 w-16",
+  xl: "h-32 w-32",
+  xxl: "h-64 w-64",
 }
 
 export function AnimatedCard({ className, title, description, icons = [] }: AnimatedCardProps) {
