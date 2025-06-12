@@ -9,10 +9,12 @@ import {
   RocketIcon,
   FigmaLogoIcon, GlobeIcon
 } from "@radix-ui/react-icons";
+import AddBriefForm from "@/components/AddBriefForm";
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModerator, setIsModerator] = useState(false);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -25,6 +27,26 @@ export default function CategoryPage() {
       setLoading(false);
     }
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    async function checkRole() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role_id, roles(name)")
+        .eq("user_id", user.id);
+
+      console.log("Résultat user_roles :", data, error);
+      if (!error && Array.isArray(data)) {
+        const isMod = data.some(
+          (ur) => Array.isArray(ur.roles) && ur.roles.some((r) => r.name === "moderator")
+        );
+        setIsModerator(isMod);
+      }
+    }
+    checkRole();
   }, []);
 
   function getCategoryIcon(categoryName: string) {
@@ -83,6 +105,11 @@ export default function CategoryPage() {
         <div className="inline-block max-w-lg text-center justify-center">
           <h1 className={title()}>Catégories de Brief</h1>
         </div>
+        {isModerator && (
+          <div className="mb-4">
+            <AddBriefForm />
+          </div>
+        )}
         {!loading && (
           <GlassIcons
             items={categories.map((cat) => ({
