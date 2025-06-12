@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { supabase } from "@/lib/supabase";
 import { title } from "@/components/primitives";
 import DefaultLayout from "@/layouts/default";
@@ -29,17 +28,14 @@ export default function MonthlyPage() {
       if (user) {
         const { data: rolesData, error: rolesError } = await supabase
           .from("user_roles")
-          .select("role_id, roles(name)")
+          .select("role_id")
           .eq("user_id", user.id);
 
         if (!rolesError && Array.isArray(rolesData)) {
-          const isMod = rolesData.some(
-            (ur) =>
-              Array.isArray(ur.roles) &&
-              ur.roles.some((r) => r.name === "moderator"),
-          );
-
+          const isMod = rolesData.some((ur) => ur.role_id === 2);
           setIsModerator(isMod);
+        } else {
+          setIsModerator(false);
         }
       } else {
         setIsModerator(false);
@@ -66,23 +62,23 @@ export default function MonthlyPage() {
         <div>Chargement…</div>
       ) : brief ? (
         <AnimatedCard
+          title={brief.title}
           description={brief.description}
           icons={[
             {
               icon: (
                 <img
-                  alt="Image du brief"
-                  className="object-cover"
                   src={
                     brief.image_url ||
                     "https://cdn.cosmos.so/2d774ea0-4b4f-4d9f-a634-6b6c5a130e91?format=jpeg"
                   }
+                  alt="Brief"
+                  className="object-cover"
                 />
               ),
               size: "xxl",
             },
           ]}
-          title={brief.title}
         />
       ) : (
         <div>Aucun brief trouvé.</div>
