@@ -26,17 +26,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      setLoading(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user ?? null);
+      } catch (err) {
+        console.error('Error getting session:', err);
+        setError('Failed to get session');
+      } finally {
+        setLoading(false);
+      }
     };
+
     getSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
           setUser(session.user);
-          setJustSignedIn(true); // Marque qu'on vient de se connecter
+          setJustSignedIn(true);
         } else if (event === "SIGNED_OUT") {
           setUser(null);
           setJustSignedIn(false);
@@ -44,7 +51,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     );
-    return () => subscription.unsubscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   // Inscription email/mot de passed
