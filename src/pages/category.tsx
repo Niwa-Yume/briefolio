@@ -7,7 +7,7 @@ import {
   LockClosedIcon,
   LightningBoltIcon,
   RocketIcon,
-  FigmaLogoIcon
+  FigmaLogoIcon, GlobeIcon
 } from "@radix-ui/react-icons";
 
 export default function CategoryPage() {
@@ -56,6 +56,8 @@ export default function CategoryPage() {
             </g>
           </svg>
         );
+      case "web":
+        return <GlobeIcon className="w-6 h-6" />;
       default:
         return <RocketIcon className="w-6 h-6" />;
     }
