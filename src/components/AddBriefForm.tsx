@@ -27,12 +27,14 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
 
   return (
     <>
-      <button
-        className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-        onClick={() => setOpen(true)}
-      >
-        Ajouter un brief
-      </button>
+      <div className="flex justify-center mb-4">
+        <button
+          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+          onClick={() => setOpen(true)}
+        >
+          Ajouter un brief
+        </button>
+      </div>
       <Transition appear show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={() => setOpen(false)}>
           <Transition.Child
