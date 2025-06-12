@@ -34,7 +34,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
     setAiBriefs([]);
     try {
       const response = await axios.post(
-        "https://briefolio.vercel.app/api/api",
+        "https://briefolio.vercel.app/api/generate-brief",
         {
           messages: [
             {
