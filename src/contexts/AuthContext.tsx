@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
-import { useNavigate } from "react-router-dom";
 
 type AuthContextType = {
   user: User | null;
@@ -22,7 +21,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [justSignedIn, setJustSignedIn] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const getSession = async () => {
@@ -47,7 +45,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } else if (event === "SIGNED_OUT") {
           setUser(null);
           setJustSignedIn(false);
-          navigate("/login");
         }
       }
     );
@@ -55,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
 
   // Inscription email/mot de passed
   const register = async (email: string, password: string): Promise<void> => {
