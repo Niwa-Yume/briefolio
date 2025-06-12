@@ -34,7 +34,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
     setAiBriefs([]);
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/generate-briefs",
+        "https://briefolio.vercel.app/api/api",
         {
           messages: [
             {
@@ -56,6 +56,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
       setAiBriefs(text.split(/\n{2,}/).filter(Boolean));
     } catch (e) {
       alert("Erreur lors de la génération IA");
+      console.error("Erreur lors de la génération IA:", e);
     }
     setAiLoading(false);
   };
@@ -141,7 +142,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                         onClick={fetchAIBriefs}
                         disabled={aiLoading}
                       >
-                        {aiLoading ? "Génération..." : "Générer avec l’IA"}
+                        {aiLoading ? "Génération..." : "Générer avec l’IA un nouveau brif"}
                       </button>
                     </div>
                     {aiBriefs.length > 0 && (

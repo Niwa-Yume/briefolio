@@ -35,6 +35,8 @@
     "class-variance-authority": "^0.7.1",
     "cli": "^1.0.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
     "framer-motion": "^12.16.0",
     "lucide-react": "^0.513.0",
     "motion": "^12.16.0",
