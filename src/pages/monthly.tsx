@@ -5,7 +5,7 @@ import { title } from "@/components/primitives";
 import DefaultLayout from "@/layouts/default";
 import { AnimatedCard } from "@/components/ui/feature-block-animated-card";
 import AddBriefForm from "@/components/AddBriefForm.tsx";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function MonthlyPage() {
   const [brief, setBrief] = useState<any>(null);
