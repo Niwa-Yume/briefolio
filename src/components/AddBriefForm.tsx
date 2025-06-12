@@ -15,7 +15,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<BriefFormValues>();
   const [aiLoading, setAiLoading] = useState(false);
   const [aiBriefs, setAiBriefs] = useState<string[]>([]);
-  const apiKey = process.env.OPENAI_API_KEY;
+
 
 
   const onSubmit = async (data: BriefFormValues) => {
@@ -34,9 +34,8 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
     setAiBriefs([]);
     try {
       const response = await axios.post(
-        "https://api.openai.com/v1/chat/completions",
+        "http://localhost:3001/api/generate-briefs",
         {
-          model: "gpt-3.5-turbo",
           messages: [
             {
               role: "system",
@@ -50,15 +49,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                 "\n" +
                 "1. ciblent **≥ 1** des thèmes : AI · Tech · Webtoon/Manga · Esport · Blockchain · Fun étudiants tech 2025 · Apprentissage du japonais · mini-jeux Three.js., sécurité, F1, Script, Webdesign, Web, Blockchain\n"
             }
-          ],
-          max_tokens: 500,
-          temperature: 0.8,
-        },
-        {
-          headers: {
-            "Authorization": `Bearer ${apiKey}`,
-            "Content-Type": "application/json",
-          },
+          ]
         }
       );
       const text = response.data.choices[0].message.content;
