@@ -18,10 +18,11 @@ export default function CategoryPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModerator, setIsModerator] = useState(false);
-  const { user } = useAuth(); // Récupère l'utilisateur du contexte
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    if (user === undefined || user === null) return; // attend que l'auth soit prête
+    if (authLoading) return; // attend la fin du chargement de l'auth
+
     async function fetchCategoriesAndCheckRole() {
       const { data, error } = await supabase
         .from("category")
@@ -36,20 +37,23 @@ export default function CategoryPage() {
           .select("role_id, roles(name)")
           .eq("user_id", user.id);
 
-        console.log("Résultat user_roles :", rolesData, rolesError);
         if (!rolesError && Array.isArray(rolesData)) {
           const isMod = rolesData.some(
             (ur) =>
               Array.isArray(ur.roles) &&
               ur.roles.some((r) => r.name === "moderator"),
           );
+
           setIsModerator(isMod);
         }
+      } else {
+        setIsModerator(false);
       }
       setLoading(false);
     }
+
     void fetchCategoriesAndCheckRole();
-  }, [user]);
+  }, [user, authLoading]);
 
   function getCategoryIcon(categoryName: string) {
     switch (categoryName.trim().toLowerCase()) {
