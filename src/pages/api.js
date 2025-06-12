@@ -1,12 +1,11 @@
-import express from "express";
 import axios from "axios";
-import dotenv from "dotenv";
-dotenv.config();
 
-const app = express();
-app.use(express.json());
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Méthode non autorisée" });
+    return;
+  }
 
-app.post("/api/generate-briefs", async (req, res) => {
   const apiKey = process.env.OPENAI_API_KEY;
   const { messages } = req.body;
 
@@ -26,10 +25,8 @@ app.post("/api/generate-briefs", async (req, res) => {
         },
       }
     );
-    res.json(response.data);
+    res.status(200).json(response.data);
   } catch (e) {
     res.status(500).json({ error: "Erreur OpenAI" });
   }
-});
-
-app.listen(3001, () => console.log("API démarrée sur http://localhost:3001"));
+}
