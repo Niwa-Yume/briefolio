@@ -10,14 +10,18 @@ import {
   FigmaLogoIcon, GlobeIcon
 } from "@radix-ui/react-icons";
 import AddBriefForm from "@/components/AddBriefForm";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModerator, setIsModerator] = useState(false);
+  const { user } = useAuth(); // Récupère l'utilisateur du contexte
+
 
   useEffect(() => {
-    async function fetchCategories() {
+    async function fetchCategoriesAndCheckRole() {
+      // 1. Récupère les catégories
       const { data, error } = await supabase
         .from("category")
         .select("*")
@@ -25,29 +29,25 @@ export default function CategoryPage() {
 
       if (!error && data) setCategories(data);
       setLoading(false);
-    }
-    fetchCategories();
-  }, []);
 
-  useEffect(() => {
-    async function checkRole() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data, error } = await supabase
-        .from("user_roles")
-        .select("role_id, roles(name)")
-        .eq("user_id", user.id);
+      // 2. Vérifie le rôle si l'utilisateur est connecté
+      if (user) {
+        const { data: rolesData, error: rolesError } = await supabase
+          .from("user_roles")
+          .select("role_id, roles(name)")
+          .eq("user_id", user.id);
 
-      console.log("Résultat user_roles :", data, error);
-      if (!error && Array.isArray(data)) {
-        const isMod = data.some(
-          (ur) => Array.isArray(ur.roles) && ur.roles.some((r) => r.name === "moderator")
-        );
-        setIsModerator(isMod);
+        console.log("Résultat user_roles :", rolesData, rolesError);
+        if (!rolesError && Array.isArray(rolesData)) {
+          const isMod = rolesData.some(
+            (ur) => Array.isArray(ur.roles) && ur.roles.some((r) => r.name === "moderator")
+          );
+          setIsModerator(isMod);
+        }
       }
     }
-    checkRole();
-  }, []);
+    fetchCategoriesAndCheckRole();
+  }, [user]); // Dépend de user du contexte
 
   function getCategoryIcon(categoryName: string) {
     switch (categoryName.trim().toLowerCase()) {
