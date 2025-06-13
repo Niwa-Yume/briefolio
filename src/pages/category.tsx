@@ -5,7 +5,6 @@ import { supabase } from "@/lib/supabase.ts";
 import { Component as GlassIcons } from "@/components/ui/glass-icons";
 import {
   LockClosedIcon,
-  LightningBoltIcon,
   RocketIcon,
   FigmaLogoIcon, GlobeIcon
 } from "@radix-ui/react-icons";
