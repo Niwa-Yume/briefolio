@@ -55,7 +55,7 @@ export default function CategoryPage() {
     switch (categoryName.trim().toLowerCase()) {
       case "sécurité":
         return <LockClosedIcon className="w-6 h-6" />;
-      case "script":
+      case "ai":
         return <LightningBoltIcon className="w-6 h-6" />;
       case "webdesign":
         return <FigmaLogoIcon className="w-6 h-6" />;
@@ -90,7 +90,7 @@ export default function CategoryPage() {
     switch (categoryName.trim().toLowerCase()) {
       case "sécurité":
         return "indigo";
-      case "script":
+      case "ai":
         return "orange";
       case "webdesign":
         return "green";
