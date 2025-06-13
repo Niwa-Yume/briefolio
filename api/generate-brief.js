@@ -23,18 +23,28 @@ export default async function handler(req, res) {
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
-  const { messages } = req.body;
 
-  // Validation des données
-  if (!messages || !Array.isArray(messages)) {
-    res.status(400).json({ error: "Messages requis et doivent être un tableau" });
-    return;
-  }
-
+  // Validation de la clé API
   if (!apiKey) {
     res.status(500).json({ error: "Clé API OpenAI manquante" });
     return;
   }
+
+  // Utiliser les messages spécifiques au lieu de ceux du body
+  const messages = [
+    {
+      role: "system",
+      content: "Tu es un expert en découverte de Product-Market Fit pour des projets web simples mais pérennes (stratégie \"chameau\" : frugal, rentable tôt, zéro burn-rate).",
+    },
+    {
+      role: "user",
+      content: "## Mission\n" +
+        "\n" +
+        "Propose **5 idées de projets web codables** (SaaS, jeu, outil, plateforme…) qui :\n" +
+        "\n" +
+        "1. ciblent **≥ 1** des thèmes : AI · Tech · Webtoon/Manga · Esport · Blockchain · Fun étudiants tech 2025 · Apprentissage du japonais · mini-jeux Three.js., sécurité, F1, Script, Webdesign, Web, Blockchain\n"
+    }
+  ];
 
   try {
     const response = await axios.post(
@@ -52,6 +62,7 @@ export default async function handler(req, res) {
         },
       }
     );
+
     res.status(200).json(response.data);
   } catch (error) {
     console.error("Erreur OpenAI:", error.response?.data || error.message);
