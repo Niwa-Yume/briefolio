@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   const messages = [
     {
       role: "system",
-      content: "Tu es un expert en découverte de Product-Market Fit pour des projets web simples mais pérennes (stratégie \"chameau\" : frugal, rentable tôt, zéro burn-rate).",
+      content: "Tu es un expert en découverte de Product-Market Fit pour des projets web simples mais pérennes (stratégie \"chameau\" : frugal, rentable tôt, zéro burn-rate) soit créatif pour les idées et innov.",
     },
     {
       role: "user",
