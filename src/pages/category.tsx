@@ -91,11 +91,11 @@ export default function CategoryPage() {
       case "sécurité":
         return "indigo";
       case "ai":
-        return "orange";
+        return "purple";
       case "webdesign":
         return "green";
       case "blockchain":
-        return "purple";
+        return "orange";
       default:
         return "blue";
     }
