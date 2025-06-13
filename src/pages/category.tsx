@@ -56,7 +56,7 @@ export default function CategoryPage() {
       case "sécurité":
         return <LockClosedIcon className="w-6 h-6" />;
       case "ai":
-        return <LightningBoltIcon className="w-6 h-6" />;
+        return <RocketIcon className="w-6 h-6" />
       case "webdesign":
         return <FigmaLogoIcon className="w-6 h-6" />;
       case "blockchain":
