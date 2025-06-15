@@ -174,6 +174,23 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                       {errors.description && <span className="text-red-500 text-xs">{errors.description.message}</span>}
                     </div>
                     <div>
+                      <label htmlFor="brief-category" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        Catégorie
+                      </label>
+                      <select
+                        id="brief-category"
+                        className="mt-1 w-full rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500"
+                        {...register("category", { required: "Catégorie requise" })}
+                        aria-required="true"
+                      >
+                        <option value="">Choisir une catégorie</option>
+                        {categories.map((cat) => (
+                          <option key={cat.id} value={cat.name}>{cat.name}</option>
+                        ))}
+                      </select>
+                      {errors.category && <span className="text-red-500 text-xs">{errors.category.message}</span>}
+                    </div>
+                    <div>
                       <label htmlFor="brief-image" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
                         Image
                       </label>
