@@ -139,7 +139,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                       >
                         <option value="">Choisir une catégorie</option>
                         <option value="sécurité">Sécurité</option>
-                        <option value="script">Script</option>
+                        <option value="ai">AI</option>
                         <option value="webdesign">Webdesign</option>
                         <option value="blockchain">Blockchain</option>
                         <option value="web">Web</option>
