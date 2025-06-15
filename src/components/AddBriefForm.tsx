@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase.ts";
 import { useDispatch } from "react-redux";
 import { showNotification } from "@/store/notificationSlice";
@@ -10,20 +10,56 @@ type BriefFormValues = {
   title: string;
   description: string;
   category: string;
+  image?: FileList;
+};
+
+type Category = {
+  id: number;
+  name: string;
 };
 
 export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => void }) {
   const [open, setOpen] = useState(false);
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<BriefFormValues>();
+  const [categories, setCategories] = useState<Category[]>([]);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiBriefs, setAiBriefs] = useState<string[]>([]);
   const dispatch = useDispatch();
 
+  // Charger les catégories dynamiquement
+  useEffect(() => {
+    async function fetchCategories() {
+      const { data, error } = await supabase.from("category").select("*");
+      if (!error && data) setCategories(data);
+    }
+    fetchCategories();
+  }, []);
 
-
-
+  // Soumission du formulaire avec upload image
   const onSubmit = async (data: BriefFormValues) => {
-    const { error } = await supabase.from("briefs").insert([data]);
+    let image_url = "";
+    if (data.image && data.image[0]) {
+      const file = data.image[0];
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase
+        .storage
+        .from("brief-images")
+        .upload(fileName, file);
+
+      if (uploadError) {
+        dispatch(showNotification({ type: "error", message: "Erreur lors de l'upload de l'image." }));
+        return;
+      }
+      image_url = supabase.storage.from("brief-images").getPublicUrl(fileName).data.publicUrl;
+    }
+
+    const { error } = await supabase.from("briefs").insert([{
+      title: data.title,
+      description: data.description,
+      category: data.category,
+      image_url,
+    }]);
     if (!error) {
       reset();
       setOpen(false);
@@ -40,6 +76,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
     }
   };
 
+  // Génération IA
   const fetchAIBriefs = async () => {
     setAiLoading(true);
     setAiBriefs([]);
@@ -54,11 +91,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
             },
             {
               role: "user",
-              content: "## Mission\n" +
-                "\n" +
-                "Propose **5 idées de projets web codables** (SaaS, jeu, outil, plateforme…) qui :\n" +
-                "\n" +
-                "1. ciblent **≥ 1** des thèmes : AI · Tech · Webtoon/Manga · Esport · Blockchain · Fun étudiants tech 2025 · Apprentissage du japonais · mini-jeux Three.js., sécurité, F1, Script, Webdesign, Web, Blockchain\n"
+              content: "## Mission\n\nPropose **5 idées de projets web codables** (SaaS, jeu, outil, plateforme…) qui :\n\n1. ciblent **≥ 1** des thèmes : AI · Tech · Webtoon/Manga · Esport · Blockchain · Fun étudiants tech 2025 · Apprentissage du japonais · mini-jeux Three.js., sécurité, F1, Script, Webdesign, Web, Blockchain\n"
             }
           ]
         }
@@ -66,7 +99,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
       const text = response.data.choices[0].message.content;
       setAiBriefs(text.split(/\n{2,}/).filter(Boolean));
     } catch (e) {
-      alert("Erreur lors de la génération IA");
+      dispatch(showNotification({ type: "error", message: "Erreur lors de la génération IA." }));
       console.error("Erreur lors de la génération IA:", e);
     }
     setAiLoading(false);
@@ -138,13 +171,21 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                         {...register("category", { required: "Catégorie requise" })}
                       >
                         <option value="">Choisir une catégorie</option>
-                        <option value="sécurité">Sécurité</option>
-                        <option value="ai">AI</option>
-                        <option value="webdesign">Webdesign</option>
-                        <option value="blockchain">Blockchain</option>
-                        <option value="web">Web</option>
+                        {categories.map((cat) => (
+                          <option key={cat.id} value={cat.name}>{cat.name}</option>
+                        ))}
                       </select>
                       {errors.category && <span className="text-red-500 text-xs">{errors.category.message}</span>}
+                    </div>
+                    <div>
+                      <label htmlFor="brief-image" className="block text-sm font-medium">Image</label>
+                      <input
+                        id="brief-image"
+                        type="file"
+                        accept="image/*"
+                        {...register("image")}
+                        className="mt-1 block w-full"
+                      />
                     </div>
                     <div className="flex items-center gap-2">
                       <button
@@ -153,7 +194,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                         onClick={fetchAIBriefs}
                         disabled={aiLoading}
                       >
-                        {aiLoading ? "Génération..." : "Générer avec l’IA un nouveau brif"}
+                        {aiLoading ? "Génération..." : "Générer avec l’IA un nouveau brief"}
                       </button>
                     </div>
                     {aiBriefs.length > 0 && (
