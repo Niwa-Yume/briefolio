@@ -10,6 +10,9 @@ import CompleteProfilePage from "@/pages/complete-profile";
 import { ProfileCompletionGuard } from "@/components/ProfileCompletionGuard";
 import ProfilePage from "@/pages/profile.tsx";
 import ContactPage from "@/pages/contact.tsx";
+import CategoryDetailsPage from "@/pages/category-details";
+import BriefDetailsPage from "@/pages/brief-details";
+
 
 
 function App() {
@@ -25,6 +28,8 @@ function App() {
       <Route element={<RegisterPage />} path="/register" />
       <Route element={<LoginPage />} path="/login" />
       <Route element={<CompleteProfilePage />} path="/complete-profile" />
+        <Route path="/category/:categoryName" element={<CategoryDetailsPage />} />
+        <Route path="/brief/:id" element={<BriefDetailsPage />} />
     </Routes>
       </ProfileCompletionGuard>
     </AuthProvider>

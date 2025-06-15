@@ -9,11 +9,15 @@ import {
   FigmaLogoIcon, GlobeIcon
 } from "@radix-ui/react-icons";
 import AddBriefForm from "@/components/AddBriefForm";
+import { useNavigate } from "react-router-dom";
+
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModerator, setIsModerator] = useState(false);
+  const navigate = useNavigate();
+
 
 
   useEffect(() => {
@@ -117,6 +121,8 @@ export default function CategoryPage() {
               icon: getCategoryIcon(cat.name_category),
               color: getCategoryColor(cat.name_category),
               label: cat.name_category,
+              onClick: () =>
+                navigate(`/category/${encodeURIComponent(cat.name_category)}`),
             }))}
           />
         )}
