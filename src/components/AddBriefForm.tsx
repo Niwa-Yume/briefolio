@@ -15,7 +15,7 @@ type BriefFormValues = {
 
 type Category = {
   id: number;
-  name: string;
+  name_category: string;
 };
 
 export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => void }) {
@@ -185,7 +185,9 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                       >
                         <option value="">Choisir une catégorie</option>
                         {categories.map((cat) => (
-                          <option key={cat.id} value={cat.name}>{cat.name}</option>
+                          <option key={cat.id} value={cat.name_category}>
+                            {cat.name_category}
+                          </option>
                         ))}
                       </select>
                       {errors.category && <span className="text-red-500 text-xs">{errors.category.message}</span>}
