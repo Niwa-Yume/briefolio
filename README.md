@@ -1,123 +1,30 @@
-# Vite & HeroUI Template
+# Briefolio
 
-This is a template for creating applications using Vite and HeroUI (v2).
+**Briefolio** est une plateforme web moderne pour découvrir, proposer et explorer des briefs de projets tech, pensée pour les étudiants, makers et passionnés du web.  
+L’application met en avant un brief du mois, des catégories thématiques, et permet aux modérateurs d’ajouter de nouveaux briefs ou d’en générer via l’IA.
 
-[Try it on CodeSandbox](https://githubbox.com/frontio-ai/vite-template)
+## 🚀 Fonctionnalités principales
 
-## Technologies Used
+- **Découverte de briefs** : Parcours des briefs par catégorie ou via le brief du mois.
+- **Ajout de briefs** : Les modérateurs peuvent ajouter ou générer des briefs avec l’IA.
+- **Navigation fluide** : Interface HeroUI, animations modernes, responsive.
+- **Authentification** : Gestion des rôles (modérateur, utilisateur) via Supabase.
 
-- [Vite](https://vitejs.dev/guide/)
-- [HeroUI](https://heroui.com)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org)
-- [Framer Motion](https://www.framer.com/motion)
-- [Supabase](https://supabase.com) - For database and authentication
+## 🛠️ Technologies utilisées
 
-## How to Use
+- **[React](https://react.dev/)** – UI réactive et composants modernes
+- **[Vite](https://vitejs.dev/)** – Build ultra-rapide
+- **[HeroUI](https://heroui.com/)** – Composants UI élégants et accessibles
+- **[Tailwind CSS](https://tailwindcss.com/)** – Design utilitaire et responsive
+- **[Framer Motion](https://www.framer.com/motion/)** – Animations fluides
+- **[Supabase](https://supabase.com/)** – Base de données, authentification et API
+- **[React Hook Form](https://react-hook-form.com/)** – Gestion des formulaires
+- **[Axios](https://axios-http.com/)** – Requêtes HTTP
+- **[React Router](https://reactrouter.com/)** – Navigation côté client
 
-To clone the project, run the following command:
+## 📦 Installation & lancement
 
-```bash
-git clone https://github.com/frontio-ai/vite-template.git
-```
-
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
-
-```bash
-npm install
-```
-
-### Run the development server
-
-```bash
-npm run dev
-```
-
-### Setup pnpm (optional)
-
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@heroui/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## Supabase Integration
-
-This project uses [Supabase](https://supabase.com) for database and authentication services. The Supabase client is configured in `src/lib/supabase.ts`.
-
-### Environment Variables
-
-To connect to your Supabase project, you need to set up the following environment variables in a `.env` file at the root of the project:
-
-```bash
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-For deployment on platforms like Vercel, you can also use the React-style environment variables:
-
-```bash
-REACT_APP_SUPABASE_URL=your_supabase_url
-REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-The application is configured to check for both types of environment variables, with VITE_ prefixed variables taking precedence.
-
-You can find these values in your Supabase project dashboard under Project Settings > API.
-
-### Secure Environment Variables for Deployment
-
-For production deployments, it's important to set environment variables securely:
-
-1. **Never commit your `.env` file to version control**. Make sure it's included in your `.gitignore` file.
-2. **Set environment variables in your deployment platform**:
-   - For Vercel: You have two options:
-     - Use the Environment Variables section in your project settings (recommended for security)
-     - Use the `vercel.json` file with an `env` section (already configured in this project):
-       ```json
-       {
-         "env": {
-           "VITE_SUPABASE_URL": "your_supabase_url",
-           "VITE_SUPABASE_ANON_KEY": "your_supabase_anon_key"
-         }
-       }
-       ```
-   - For Netlify: Use the Environment Variables section in your site settings
-   - For other platforms: Refer to their documentation on how to set environment variables
-
-3. **Local Development**: Use a `.env.local` file for local development, which is automatically ignored by Git.
-
-If environment variables are missing, the application will display an error message in the console, but will still attempt to initialize the Supabase client to prevent runtime errors.
-
-### Using Supabase in Components
-
-Import the Supabase client in your components to use it:
-
-```typescript
-import { supabase } from '../lib/supabase';
-
-// Example: Fetch data from a table
-const fetchData = async () => {
-  const { data, error } = await supabase
-    .from('your_table')
-    .select('*');
-
-  if (error) {
-    console.error('Error fetching data:', error);
-    return;
-  }
-
-  console.log('Data:', data);
-};
-```
-
-For more information on how to use Supabase, refer to the [Supabase documentation](https://supabase.com/docs).
-
-## License
-
-Licensed under the [MIT license](https://github.com/frontio-ai/vite-template/blob/main/LICENSE).
+1. **Clone le repo**
+   ```bash
+   git clone https://github.com/Niwa-Yume/briefolio.git
+   cd briefolio
