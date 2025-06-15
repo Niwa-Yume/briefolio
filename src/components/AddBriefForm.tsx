@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase.ts";
 import { useDispatch } from "react-redux";
 import { showNotification } from "@/store/notificationSlice";
+import { Input } from "@heroui/react"; // Utilisation du composant Input HeroUI
 
 type BriefFormValues = {
   title: string;
@@ -26,7 +27,6 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
   const [aiBriefs, setAiBriefs] = useState<string[]>([]);
   const dispatch = useDispatch();
 
-  // Charger les catégories dynamiquement
   useEffect(() => {
     async function fetchCategories() {
       const { data, error } = await supabase.from("category").select("*");
@@ -35,7 +35,6 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
     fetchCategories();
   }, []);
 
-  // Soumission du formulaire avec upload image
   const onSubmit = async (data: BriefFormValues) => {
     let image_url = "";
     if (data.image && data.image[0]) {
@@ -76,7 +75,6 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
     }
   };
 
-  // Génération IA
   const fetchAIBriefs = async () => {
     setAiLoading(true);
     setAiBriefs([]);
@@ -111,6 +109,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
         <button
           className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
           onClick={() => setOpen(true)}
+          aria-label="Ajouter un brief"
         >
           Ajouter un brief
         </button>
@@ -139,36 +138,52 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform rounded-2xl bg-white p-6 shadow-xl transition-all">
-                  <Dialog.Title className="text-lg font-bold mb-4">Nouveau Brief</Dialog.Title>
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <Dialog.Panel className="w-full max-w-md transform rounded-2xl bg-white dark:bg-gray-900 p-6 shadow-xl transition-all">
+                  <h2 className="text-lg font-bold mb-4 text-gray-900 dark:text-gray-100" id="add-brief-title">
+                    Nouveau Brief
+                  </h2>
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="space-y-4"
+                    aria-labelledby="add-brief-title"
+                  >
                     <div>
-                      <label htmlFor="brief-title" className="block text-sm font-medium">Titre</label>
-                      <input
+                      <label htmlFor="brief-title" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        Titre
+                      </label>
+                      <Input
                         id="brief-title"
                         type="text"
                         placeholder="Entrez le titre du brief"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                        className="mt-1 block w-full"
                         {...register("title", { required: "Titre requis" })}
+                        aria-required="true"
                       />
                       {errors.title && <span className="text-red-500 text-xs">{errors.title.message}</span>}
                     </div>
                     <div>
-                      <label htmlFor="brief-description" className="block text-sm font-medium">Description</label>
-                      <textarea
+                      <label htmlFor="brief-description" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        Description
+                      </label>
+                      <Input
+                        as="textarea"
                         id="brief-description"
-                        className="mt-1 w-full rounded border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="mt-1 w-full"
                         rows={3}
                         {...register("description", { required: "Description requise" })}
+                        aria-required="true"
                       />
                       {errors.description && <span className="text-red-500 text-xs">{errors.description.message}</span>}
                     </div>
                     <div>
-                      <label htmlFor="brief-category" className="block text-sm font-medium">Catégorie</label>
+                      <label htmlFor="brief-category" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        Catégorie
+                      </label>
                       <select
                         id="brief-category"
-                        className="mt-1 w-full rounded border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="mt-1 w-full rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500"
                         {...register("category", { required: "Catégorie requise" })}
+                        aria-required="true"
                       >
                         <option value="">Choisir une catégorie</option>
                         {categories.map((cat) => (
@@ -178,13 +193,16 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                       {errors.category && <span className="text-red-500 text-xs">{errors.category.message}</span>}
                     </div>
                     <div>
-                      <label htmlFor="brief-image" className="block text-sm font-medium">Image</label>
-                      <input
+                      <label htmlFor="brief-image" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                        Image
+                      </label>
+                      <Input
                         id="brief-image"
                         type="file"
                         accept="image/*"
-                        {...register("image")}
                         className="mt-1 block w-full"
+                        {...register("image")}
+                        aria-label="Ajouter une image pour le brief"
                       />
                     </div>
                     <div className="flex items-center gap-2">
@@ -193,6 +211,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                         className="px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700"
                         onClick={fetchAIBriefs}
                         disabled={aiLoading}
+                        aria-label="Générer un brief avec l’IA"
                       >
                         {aiLoading ? "Génération..." : "Générer avec l’IA un nouveau brief"}
                       </button>
@@ -203,7 +222,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                           <button
                             key={idx}
                             type="button"
-                            className="w-full text-left p-2 border rounded cursor-pointer hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full text-left p-2 border rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             onClick={() => {
                               const [title, ...desc] = brief.split(":");
                               reset({
@@ -221,7 +240,7 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                     <div className="flex justify-end gap-2">
                       <button
                         type="button"
-                        className="px-4 py-2 bg-gray-200 rounded"
+                        className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded"
                         onClick={() => setOpen(false)}
                         disabled={isSubmitting}
                       >
