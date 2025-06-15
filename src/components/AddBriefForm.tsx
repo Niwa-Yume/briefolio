@@ -5,7 +5,6 @@ import { Fragment, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase.ts";
 import { useDispatch } from "react-redux";
 import { showNotification } from "@/store/notificationSlice";
-import { Input } from "@heroui/react"; // Utilisation du composant Input HeroUI
 
 type BriefFormValues = {
   title: string;
@@ -151,11 +150,11 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                       <label htmlFor="brief-title" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
                         Titre
                       </label>
-                      <Input
+                      <input
                         id="brief-title"
                         type="text"
                         placeholder="Entrez le titre du brief"
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                         {...register("title", { required: "Titre requis" })}
                         aria-required="true"
                       />
@@ -165,10 +164,9 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                       <label htmlFor="brief-description" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
                         Description
                       </label>
-                      <Input
-                        as="textarea"
+                      <textarea
                         id="brief-description"
-                        className="mt-1 w-full"
+                        className="mt-1 w-full rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500"
                         rows={3}
                         {...register("description", { required: "Description requise" })}
                         aria-required="true"
@@ -176,31 +174,14 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
                       {errors.description && <span className="text-red-500 text-xs">{errors.description.message}</span>}
                     </div>
                     <div>
-                      <label htmlFor="brief-category" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
-                        Catégorie
-                      </label>
-                      <select
-                        id="brief-category"
-                        className="mt-1 w-full rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-indigo-500 focus:border-indigo-500"
-                        {...register("category", { required: "Catégorie requise" })}
-                        aria-required="true"
-                      >
-                        <option value="">Choisir une catégorie</option>
-                        {categories.map((cat) => (
-                          <option key={cat.id} value={cat.name}>{cat.name}</option>
-                        ))}
-                      </select>
-                      {errors.category && <span className="text-red-500 text-xs">{errors.category.message}</span>}
-                    </div>
-                    <div>
                       <label htmlFor="brief-image" className="block text-sm font-medium text-gray-900 dark:text-gray-100">
                         Image
                       </label>
-                      <Input
+                      <input
                         id="brief-image"
                         type="file"
                         accept="image/*"
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full text-gray-900 dark:text-gray-100"
                         {...register("image")}
                         aria-label="Ajouter une image pour le brief"
                       />
