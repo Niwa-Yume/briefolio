@@ -5,6 +5,8 @@ import DefaultLayout from "@/layouts/default";
 import { AnimatedCard } from "@/components/ui/feature-block-animated-card";
 import AddBriefForm from "@/components/AddBriefForm.tsx";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 export default function MonthlyPage() {
   const [brief, setBrief] = useState<any>(null);
@@ -46,6 +48,8 @@ export default function MonthlyPage() {
     void fetchBriefAndCheckRole();
   }, [user, authLoading]);
 
+  const navigate = useNavigate();
+
   return (
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center gap-4 md:py-10">
@@ -61,25 +65,32 @@ export default function MonthlyPage() {
       {loading ? (
         <div>Chargement…</div>
       ) : brief ? (
-        <AnimatedCard
-          title={brief.title}
-          description={brief.description}
-          icons={[
-            {
-              icon: (
-                <img
-                  src={
-                    brief.image_url ||
-                    "https://cdn.cosmos.so/2d774ea0-4b4f-4d9f-a634-6b6c5a130e91?format=jpeg"
-                  }
-                  alt="Brief"
-                  className="object-cover"
-                />
-              ),
-              size: "xxl",
-            },
-          ]}
-        />
+        <div
+          className="cursor-pointer"
+          onClick={() => navigate(`/brief/${brief.id}`)}
+          role="button"
+          tabIndex={0}
+        >
+          <AnimatedCard
+            title={brief.title}
+            description={brief.description}
+            icons={[
+              {
+                icon: (
+                  <img
+                    src={
+                      brief.image_url ||
+                      "https://cdn.cosmos.so/2d774ea0-4b4f-4d9f-a634-6b6c5a130e91?format=jpeg"
+                    }
+                    alt="Brief"
+                    className="object-cover"
+                  />
+                ),
+                size: "xxl",
+              },
+            ]}
+          />
+        </div>
       ) : (
         <div>Aucun brief trouvé.</div>
       )}
