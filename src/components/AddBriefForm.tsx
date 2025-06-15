@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { supabase } from "@/lib/supabase.ts";
+import { useDispatch } from "react-redux";
+import { showNotification } from "@/store/notificationSlice";
 
 type BriefFormValues = {
   title: string;
@@ -15,6 +17,8 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<BriefFormValues>();
   const [aiLoading, setAiLoading] = useState(false);
   const [aiBriefs, setAiBriefs] = useState<string[]>([]);
+  const dispatch = useDispatch();
+
 
 
 
@@ -24,8 +28,15 @@ export default function AddBriefForm({ onBriefAdded }: { onBriefAdded?: () => vo
       reset();
       setOpen(false);
       onBriefAdded?.();
+      dispatch(showNotification({
+        type: "success",
+        message: "Brief ajouté avec succès !"
+      }));
     } else {
-      alert("Erreur lors de l'ajout du brief");
+      dispatch(showNotification({
+        type: "error",
+        message: "Erreur lors de l'ajout du brief."
+      }));
     }
   };
 

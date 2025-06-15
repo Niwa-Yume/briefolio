@@ -12,6 +12,7 @@ import ProfilePage from "@/pages/profile.tsx";
 import ContactPage from "@/pages/contact.tsx";
 import CategoryDetailsPage from "@/pages/category-details";
 import BriefDetailsPage from "@/pages/brief-details";
+import { NotificationBar } from "@/components/NotificationBar";
 
 
 
@@ -19,6 +20,7 @@ function App() {
   return (
     <AuthProvider>
       <ProfileCompletionGuard>
+        <NotificationBar />
       <Routes>
       <Route element={<IndexPage />} path="/" />
       <Route element={<Monthly />} path="/monthly" />
