@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { GithubIcon, SearchIcon } from "@/components/icons";
+import { SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext.tsx";
@@ -123,22 +123,24 @@ export const Navbar = () => {
           </NavbarItem>
         )}
 
-        <NavbarItem className="flex gap-2">
+        {/* Affiche le ThemeSwitch uniquement sur desktop ici */}
+        <NavbarItem className="hidden sm:flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
 
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
       </NavbarContent>
 
+      {/* Menu mobile : n'affiche que le toggle, pas le logo GitHub ni le ThemeSwitch */}
       <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch />
         <NavbarMenuToggle />
       </NavbarContent>
 
       <NavbarMenu>
+        {/* Affiche le ThemeSwitch dans le menu mobile */}
+        <div className="flex w-full justify-end mb-2">
+          <ThemeSwitch />
+        </div>
         {searchInput}
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {isLoading ? (
@@ -182,7 +184,7 @@ export const Navbar = () => {
           )}
 
           {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
+            <NavbarMenuItem key={`${item}-${index}}`}>
               <Link color="foreground" href={item.href || "#"} size="lg">
                 {item.label}
               </Link>
