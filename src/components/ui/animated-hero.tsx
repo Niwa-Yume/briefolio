@@ -66,13 +66,13 @@ function Hero() {
               Trouver des projets vraiment pertinents pour enrichir son portfolio, sans tomber dans le déjà-vu, c’est un vrai défi. Ne perdez plus de temps avec des idées banales ou peu valorisantes. Briefolio a été créé pour proposer des projets uniques, concrets et inspirants, afin de bâtir un portfolio qui sort réellement du lot.
             </p>
           </div>
-          <div className="flex flex-row gap-3">
-            <Button size="lg" className="gap-4" variant="outline" asChild>
+          <div className="flex flex-row gap-3 flex-wrap justify-center w-full">
+            <Button size="lg" className="gap-4 w-full sm:w-auto" variant="outline" asChild>
               <Link to="/category">
-              Regarder la liste de brief <PhoneCall className="w-4 h-4" />
+                Regarder la liste de brief <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
-            <Button size="lg" className="gap-4" asChild>
+            <Button size="lg" className="gap-4 w-full sm:w-auto" asChild>
               <Link to="/register">
                 Inscris toi ici <MoveRight className="w-4 h-4" />
               </Link>

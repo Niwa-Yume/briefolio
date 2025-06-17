@@ -21,9 +21,14 @@ export default function AnimatedTextCycle({
     if (measureRef.current) {
       const elements = measureRef.current.children;
       if (elements.length > currentIndex) {
-        // Add a small buffer (10px) to prevent text wrapping
+        const parentWidth = measureRef.current.parentElement?.offsetWidth || 0;
         const newWidth = elements[currentIndex].getBoundingClientRect().width;
-        setWidth(`${newWidth}px`);
+        // Limite la largeur à celle du parent (responsive)
+        if (parentWidth && newWidth > parentWidth) {
+          setWidth("100%");
+        } else {
+          setWidth(`${newWidth}px`);
+        }
       }
     }
   }, [currentIndex]);
@@ -69,11 +74,11 @@ export default function AnimatedTextCycle({
       <div 
         ref={measureRef} 
         aria-hidden="true"
-        className="absolute opacity-0 pointer-events-none"
+        className="absolute opacity-0 pointer-events-none w-full max-w-full"
         style={{ visibility: "hidden" }}
       >
         {words.map((word, i) => (
-          <span key={i} className={`font-bold ${className}`}>
+          <span key={i} className={`font-bold ${className}`} style={{whiteSpace: "nowrap"}}>
             {word}
           </span>
         ))}
@@ -81,8 +86,8 @@ export default function AnimatedTextCycle({
 
       {/* Visible animated word */}
       <motion.span 
-        className="relative inline-block"
-        animate={{ 
+        className="relative inline-block max-w-full overflow-x-hidden align-middle"
+        animate={{
           width,
           transition: { 
             type: "spring",
@@ -91,6 +96,7 @@ export default function AnimatedTextCycle({
             mass: 1.2,
           }
         }}
+        style={{maxWidth: "100%", overflowX: "hidden", verticalAlign: "middle"}}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
@@ -100,7 +106,7 @@ export default function AnimatedTextCycle({
             initial="hidden"
             animate="visible"
             exit="exit"
-            style={{ whiteSpace: "nowrap" }}
+            style={{ whiteSpace: "nowrap", maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis" }}
           >
             {words[currentIndex]}
           </motion.span>
@@ -108,4 +114,4 @@ export default function AnimatedTextCycle({
       </motion.span>
     </>
   );
-} 
+}
