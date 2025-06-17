@@ -1,30 +1,89 @@
-# Briefolio
+# 🚀 Briefolio
 
-**Briefolio** est une plateforme web moderne pour découvrir, proposer et explorer des briefs de projets tech, pensée pour les étudiants, makers et passionnés du web.  
-L’application met en avant un brief du mois, des catégories thématiques, et permet aux modérateurs d’ajouter de nouveaux briefs ou d’en générer via l’IA.
+![Briefolio Banner](public/vite.svg)
 
-## 🚀 Fonctionnalités principales
+[![Made with Vite](https://img.shields.io/badge/Vite-%2335495e.svg?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-- **Découverte de briefs** : Parcours des briefs par catégorie ou via le brief du mois.
-- **Ajout de briefs** : Les modérateurs peuvent ajouter ou générer des briefs avec l’IA.
-- **Navigation fluide** : Interface HeroUI, animations modernes, responsive.
-- **Authentification** : Gestion des rôles (modérateur, utilisateur) via Supabase.
+---
 
-## 🛠️ Technologies utilisées
+## ✨ Présentation
 
-- **[React](https://react.dev/)** – UI réactive et composants modernes
-- **[Vite](https://vitejs.dev/)** – Build ultra-rapide
-- **[HeroUI](https://heroui.com/)** – Composants UI élégants et accessibles
-- **[Tailwind CSS](https://tailwindcss.com/)** – Design utilitaire et responsive
-- **[Framer Motion](https://www.framer.com/motion/)** – Animations fluides
-- **[Supabase](https://supabase.com/)** – Base de données, authentification et API
-- **[React Hook Form](https://react-hook-form.com/)** – Gestion des formulaires
-- **[Axios](https://axios-http.com/)** – Requêtes HTTP
-- **[React Router](https://reactrouter.com/)** – Navigation côté client
+**Briefolio** est la plateforme qui permet à tous, débutants comme experts, de créer, partager et découvrir des projets inspirants. Notre mission : rendre la création de projets accessible, ludique et valorisante, peu importe votre expérience.
 
-## 📦 Installation & lancement
+- 🎨 Interface moderne & responsive
+- ⚡ Génération de briefs créatifs
+- 🔒 Authentification sécurisée
+- 🏆 Suivi de progression et notifications
+- 🌈 Expérience utilisateur soignée
 
-1. **Clone le repo**
-   ```bash
-   git clone https://github.com/Niwa-Yume/briefolio.git
-   cd briefolio
+---
+
+## 🖼️ Aperçu
+
+> Ajoutez ici des captures d’écran ou GIFs pour illustrer l’interface et les fonctionnalités principales.
+
+---
+
+## 🚀 Démarrage rapide
+
+### Prérequis
+
+- Node.js ≥ 18
+- pnpm / npm / yarn / Bun
+
+### Installation
+
+```bash
+git clone https://github.com/niwa/Briefolio.git
+cd Briefolio
+npm install
+npm run dev
+```
+
+> Accédez à l’application sur [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 🛠️ Stack technique
+
+- **React** + **TypeScript**
+- **Vite** (build ultra-rapide)
+- **Tailwind CSS** (UI moderne)
+- **Supabase** (auth & base de données)
+- **PostCSS** (styles avancés)
+- **Hero UI** (section d'accueil animée)
+
+---
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! Pour contribuer :
+
+1. Fork le repo
+2. Crée une branche (`git checkout -b feature/ma-nouvelle-fonctionnalite`)
+3. Commit tes changements (`git commit -am 'Ajoute une fonctionnalité'`)
+4. Push la branche (`git push origin feature/ma-nouvelle-fonctionnalite`)
+5. Ouvre une Pull Request
+
+---
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](./LICENSE) pour plus d’informations.
+
+---
+
+## 💡 Contact & Communauté
+
+- [Site officiel](https://briefolio.com)
+- [Contact](mailto:contact@briefolio.com)
+- [Twitter](https://twitter.com/briefolio)
+- [Discord](https://discord.gg/briefolio)
+
+---
+
+> _Faites de magnifiques projets, peu importe votre expérience._  
+> **Briefolio, la créativité accessible à tous.**
+
+---
