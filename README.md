@@ -83,6 +83,21 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](./LICENSE) pour plus d
 
 ---
 
+## Configuration du fichier .env
+
+Avant de lancer le projet, assurez-vous de configurer un fichier `.env` à la racine du projet. Ce fichier doit contenir les variables d'environnement nécessaires, telles que les clés API ou les informations de connexion à la base de données.
+
+Exemple de contenu pour `.env` :
+
+```
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+Assurez-vous de ne pas partager ce fichier ou ses informations sensibles publiquement.
+
+---
+
 > _Faites de magnifiques projets, peu importe votre expérience._  
 > **Briefolio, la créativité accessible à tous.**
 
