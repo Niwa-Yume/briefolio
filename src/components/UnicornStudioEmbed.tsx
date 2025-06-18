@@ -30,6 +30,7 @@ const UnicornStudioEmbed = () => {
   return (
     <div
       data-us-project="EtMztKQLYrjjPU6lz8VB"
+      data-testid="unicorn-embed"
       style={{
         width: "100%",
         maxWidth: "100%",

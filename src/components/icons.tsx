@@ -1,5 +1,5 @@
 import * as React from "react";
-import logoPng from "@/assets/logo choix 2.png";
+import logoPng from "@/assets/logo-choix-2.png";
 import { IconSvgProps } from "@/types";
 
 export const Logo: React.FC<{ size?: number; height?: number }> = ({
