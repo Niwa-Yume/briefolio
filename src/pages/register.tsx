@@ -1,33 +1,14 @@
 import { useState } from "react";
 import { Link } from "@heroui/link";
-import { Input } from "@heroui/input";
-import { useNavigate } from "react-router-dom";
-import DefaultLayout from "@/layouts/default";
 import { Button } from "@/components/ui/button";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { useAuth } from "@/contexts/AuthContext";
+import DefaultLayout from "@/layouts/default";
 
 export default function RegisterPage() {
-  const { register, loginWithProvider, loading } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { loginWithProvider, loading } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const navigate = useNavigate();
-
-  // Inscription email/mot de passe
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-    try {
-      await register(email, password);
-      setSuccess("Vérifiez votre email pour confirmer votre compte.");
-      navigate("/complete-profile");
-    } catch (err: any) {
-      setError(err.message || "Une erreur s'est produite lors de l'inscription.");
-    }
-  };
 
   // OAuth GitHub
   const handleGithubLogin = async () => {
@@ -87,52 +68,6 @@ export default function RegisterPage() {
           <GoogleIcon className="h-5 w-5" />
           Continuer avec Google
         </Button>
-
-        <div className="flex items-center w-full my-4">
-          <div className="flex-grow h-px bg-gray-300" />
-          <span className="px-3 text-sm text-gray-500">ou</span>
-          <div className="flex-grow h-px bg-gray-300" />
-        </div>
-
-        <form onSubmit={handleRegister} className="w-full space-y-4">
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <Input
-              type="email"
-              aria-label="Email"
-              placeholder="votre@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              classNames={{
-                inputWrapper: "w-full",
-                input: "w-full"
-              }}
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Mot de passe</label>
-            <Input
-              type="password"
-              aria-label="Mot de passe"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              classNames={{
-                inputWrapper: "w-full",
-                input: "w-full"
-              }}
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? "Chargement..." : "S'inscrire"}
-          </Button>
-        </form>
 
         <p className="mt-6 text-sm text-center">
           Vous avez déjà un compte?{" "}
